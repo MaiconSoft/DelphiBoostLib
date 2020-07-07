@@ -8,7 +8,7 @@ Library to boost delphi objects using helpers.
 
 ## Functions
 
-### Notas:
+### Notes:
 <div id="SURROUND_INDEX"/>
 
  Surround index: The index can be above length of array or bellow zero.
@@ -144,7 +144,7 @@ Library to boost delphi objects using helpers.
 *Return:*
 >  - Result(Integer):
 >  	- If item is found: return index of value in array (zero based);
->   - Else: return -1.
+>  	- Else: return -1.
 
 <hr width=”100%”>
 
@@ -161,7 +161,7 @@ Library to boost delphi objects using helpers.
 *Return:*
 >  - Result(Integer):
 >  	- If item is found: return index of value in array (zero based);
->   - Else: return -1.
+>  	- Else: return -1.
 
 <hr width=”100%”>
 
