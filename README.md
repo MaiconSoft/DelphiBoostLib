@@ -1151,7 +1151,7 @@ property Count: Integer read GetCount write SetCount;
 *SET(Integer):*
 >  - Define a length of array, if need expand, it will be fill with empty string;
 
-*GET(string):*
+*GET(Integer):*
 >  - Return a length of array;
 
 *Exemple:*
