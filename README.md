@@ -868,7 +868,7 @@ var
 begin
 	data = ['apple','orange','banana'];
 	
-	data.Save('c:\\data.txt');	
+	data.Save('c:\data.txt');	
 end;
 ```
 
@@ -894,12 +894,12 @@ var
 	data: TStringDynArray;
 begin
 	data = ['apple','orange','banana'];
-	data.Save('c:\\data.txt');
+	data.Save('c:\data.txt');
 	data.Clear();	
 	ShowMessage(data.join());	
 	// Expected: ""
 
-	data.load('c:\\data.txt');
+	data.load('c:\data.txt');
 	ShowMessage(data.join());	
 	// Expected: "apple orange banana"	
 end;
