@@ -1411,7 +1411,7 @@ begin
 	data = ['apple','orange','banana'];
 	data.Every(Function (Index:integer; Item:string):boolean
 				 begin
-					If (Index = 0) then				 
+					If (Index = 0) then
 				 		Result:= Item.length = 5
 				 	else:
 				 		Result:= Item.length = 6
@@ -1520,6 +1520,34 @@ function Find(func: TFunc<string, Integer, Boolean>): string; overload;
 *Return:*
 >  - Result(string): Return the vector element that pass the test. If none elements pass in test or 'func' is not assigned, will return a empty string.
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data TStringDynArray;
+	found:string;
+begin
+	data = ['grape','apple','orange','banana'];
+	found = data.Find(Function (Index:integer; Item:string):boolean
+			begin			
+				If (Index > 1) 		
+					Result:= (Item = 'orange') or (Item = 'apple')
+				else
+					Result:= false;
+			end);
+	ShowMessage(found);
+	Expected: "apple"
+
+	found = data.Find(Function (Item:string):boolean
+			begin				 			
+				Result:= (Item = 'strawberry') or (Item.length = 3);
+			end);
+	ShowMessage(found);
+	Expected: ""
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -1546,19 +1574,18 @@ var
 begin
 	data = ['grape','apple','orange','banana'];
 	found = data.Find(Function (Item:string):boolean
-				 		begin				 			
-				 			Result:= (Item = 'orange') or (Item = 'apple');
-				 		end);
+			begin				 			
+				Result:= (Item = 'orange') or (Item = 'apple');
+			end);
 	ShowMessage(found);
 	Expected: "apple"
 
 	found = data.Find(Function (Item:string):boolean
-				 		begin				 			
-				 			Result:= (Item = 'strawberry') or (Item.length = 3);
-				 		end);
+			begin				 			
+				Result:= (Item = 'strawberry') or (Item.length = 3);
+			end);
 	ShowMessage(found);
 	Expected: ""
-
 end;
 ```
 
