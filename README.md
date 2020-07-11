@@ -1374,7 +1374,7 @@ begin
 
 	data.Every(Function (Item:string):boolean
 				 begin
-					If (Item.length > 0)then									 
+					If (Item.length > 0)then
 				 		Result := Item[1] in ['a'..'f'];
 				 	else
 				 		Result := False;
