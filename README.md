@@ -42,6 +42,26 @@ Library to boost delphi objects using helpers.
 *Return:*
 >  - Result(string) = Joined elements.
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+
+	ShowMessage(data.join());
+	// Expected: "apple orange banana"
+
+	ShowMessage(data.join(', '));
+	// Expected: "apple, orange, banana"
+
+	ShowMessage(data.join(' - '));
+	// Expected: "apple - orange - banana"
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -56,6 +76,21 @@ Library to boost delphi objects using helpers.
 *Return:*
 >  - None
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+
+	data.sort();
+
+	ShowMessage(data.join());
+	// Expected: "apple banana orange"
+end;
+```
 <hr width=”100%”>
 
 ```pascal
@@ -69,6 +104,22 @@ Library to boost delphi objects using helpers.
 
 *Return:*
 >  - None
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+
+	data.sort();
+
+	ShowMessage(data.join());
+	// Expected: "apple banana orange"
+end;
+```
 
 <hr width=”100%”>
 
@@ -101,6 +152,22 @@ Library to boost delphi objects using helpers.
 *Return:*
 >  - None
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+
+	data.rsort();
+
+	ShowMessage(data.join());
+	// Expected: "orange banana apple"
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -115,6 +182,23 @@ Library to boost delphi objects using helpers.
 *Return:*
 >  - None
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','banana','orange'];
+
+	data.rsort();
+
+	ShowMessage(data.join());
+	// Expected: random order every time
+	// Exemple: "banana orange apple"
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -128,6 +212,22 @@ Library to boost delphi objects using helpers.
 
 *Return:*
 >  - None
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+
+	data.Reverse();
+
+	ShowMessage(data.join());
+	// Expected: "banana orange apple"
+end;
+```
 
 <hr width=”100%”>
 
@@ -146,6 +246,37 @@ Library to boost delphi objects using helpers.
 >  	- If item is found: return index of value in array (zero based);
 >  	- Else: return -1.
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+	index: Integer;
+begin
+	data = ['apple','orange','apple' banana'];
+
+	index = data.IndexOf('apple');
+	// Expected: 0
+
+	index = data.IndexOf('orange');
+	// Expected: 1
+
+	index = data.IndexOf('lime');
+	// Expected: -1
+
+	index = data.IndexOf('apple ');
+	// Expected: -1
+
+	index = data.IndexOf('apple',1);
+	// Expected: 2
+
+	index = data.IndexOf('orange',2);
+	// Expected: -1
+
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -163,6 +294,35 @@ Library to boost delphi objects using helpers.
 >  	- If item is found: return index of value in array (zero based);
 >  	- Else: return -1.
 
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+	index: Integer;
+begin
+	data = ['apple','orange','apple', banana'];
+
+	index = data.LastIndexOf('apple');
+	// Expected: 2
+
+	index = data.LastIndexOf('orange');
+	// Expected: 1
+
+	index = data.LastIndexOf('lime');
+	// Expected: -1
+
+	index = data.LastIndexOf('apple ');
+	// Expected: -1
+
+	index = data.LastIndexOf('apple',1);
+	// Expected: 0
+
+	index = data.LastIndexOf('banana',2);
+	// Expected: -1
+
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -176,6 +336,35 @@ Library to boost delphi objects using helpers.
 
 *Return:*
 >  - None
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	data.Delete(0);
+	ShowMessage(data.join());	
+	// Expected: "orange banana"
+
+	data = ['apple','orange','banana'];
+	data.Delete(-1);
+	ShowMessage(data.join());	
+	// Expected: "apple orange"
+
+	data = ['apple','orange','banana'];
+	data.Delete(-2);
+	ShowMessage(data.join());	
+	// Expected: "apple banana"
+
+	data = ['apple','orange','banana'];
+	data.Delete(-3);
+	ShowMessage(data.join());	
+	// Expected: "orange banana"
+end;
+```
 
 <hr width=”100%”>
 
@@ -192,6 +381,35 @@ procedure Delete(Index, Count: Integer); overload;
 *Return:*
 >  - None
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin	
+	data = ['apple','orange','banana'];
+	data.Delete(0,0);
+	ShowMessage(data.join());	
+	// Expected: "apple orange banana"
+
+	data = ['apple','orange','banana'];
+	data.Delete(0,2);
+	ShowMessage(data.join());	
+	// Expected: "banana"
+
+	data = ['apple','orange','banana'];
+	data.Delete(-1,2);
+	ShowMessage(data.join());	
+	// Expected: "apple orange"
+
+	data = ['apple','orange','banana'];
+	data.Delete(1,5);
+	ShowMessage(data.join());	
+	// Expected: "apple"
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -206,6 +424,30 @@ procedure Insert(Index: Integer; Value: string); overload;
 
 *Return:*
 >  - None
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];	
+	data.Insert(0,'lime');
+	ShowMessage(data.join());	
+	// Expected: "lime apple orange banana"
+	
+	data = ['apple','orange','banana'];
+	data.Insert(-1,'lime');
+	ShowMessage(data.join());	
+	// Expected: "apple orange lime banana"
+
+	data = ['apple','orange','banana'];
+	data.Insert(4,'lime');
+	ShowMessage(data.join());	
+	// Expected: "apple lime orange banana"
+end;
+```
 
 <hr width=”100%”>
 
@@ -222,6 +464,30 @@ procedure Insert(Index: Integer; Values: TStringDynArray); overload;
 *Return:*
 >  - None
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];	
+	data.Insert(0,['lime','grape','strawberry']);
+	ShowMessage(data.join());	
+	// Expected: "lime grape strawberry apple orange banana"
+
+	data = ['apple','orange','banana'];
+	data.Insert(-1,['lime','grape','strawberry']);
+	ShowMessage(data.join());	
+	// Expected: "apple orange lime grape strawberry banana"
+	
+	data = ['apple','orange','banana'];
+	data.Insert(4,['lime','grape','strawberry']);
+	ShowMessage(data.join());	
+	// Expected: "apple lime grape strawberry orange banana"
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -235,6 +501,21 @@ procedure Add(Value: string); overload;
 
 *Return:*
 >  - None
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	
+	data.Add('lime');
+	ShowMessage(data.join());	
+	// Expected: "apple orange banana lime"
+end;
+```
 
 <hr width=”100%”>
 
@@ -250,11 +531,26 @@ procedure Add(Values: TStringDynArray); overload;
 *Return:*
 >  - None
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	
+	data.Add(['lime','grape','strawberry']);
+	ShowMessage(data.join());	
+	// Expected: "apple orange banana lime grape strawberry"
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
 function CountItems(Item: string): Integer;
- ```
+```
 
 > Count how many times the item exist in array; 
 
@@ -264,19 +560,69 @@ function CountItems(Item: string): Integer;
 *Return:*
 >  - Result(Integer): Number of Itens found (0 if not found).
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+	count:Integer;
+begin
+	data = ['apple','orange','apple','banana','apple','banana'];
+	
+	count:= data.CountItems('apple');	
+	// Expected: 3
+
+	count:= data.CountItems('orange');	
+	// Expected: 1
+
+	count:= data.CountItems('banana');	
+	// Expected: 2
+
+	count:= data.CountItems('strawberry');	
+	// Expected: 0
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
 procedure Remove(Item: string); overload;
  ```
 
-> Removes the first occurrence of the Item in array.  
+> Removes the first occurrence of the Item in array by value.  
 
 *Params:*
 > - Item(String): Item for search for.
 
 *Return:*
 >  - None
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','apple','banana'];
+	
+	data.Remove('orange');
+	ShowMessage(data.join());	
+	// Expected: "apple apple banana"
+
+	data = ['apple','orange','apple','banana'];
+	data.Remove('apple');
+	ShowMessage(data.join());	
+	// Expected: "orange apple banana"
+	
+	data = ['apple','orange','apple','banana'];
+	data.Remove('grape');
+	ShowMessage(data.join());	
+	// Expected: "apple orange apple banana"
+
+end;
+```
 
 <hr width=”100%”>
 
@@ -293,6 +639,32 @@ procedure Remove(Item: string; count: integer); overload;
 *Return:*
 >  - None
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','apple','banana'];
+	
+	data.Remove('orange',0);
+	ShowMessage(data.join());	
+	// Expected: "apple orange apple banana"
+
+	data = ['apple','orange','apple','banana'];
+	data.Remove('apple',2);
+	ShowMessage(data.join());	
+	// Expected: "apple banana"
+	
+	data = ['apple','orange','apple','banana'];
+	data.Remove('grape',3);
+	ShowMessage(data.join());	
+	// Expected: "apple orange apple banana"
+
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -306,6 +678,23 @@ procedure Clear();
 
 *Return:*
 >  - None
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	
+	data.Clear();
+	ShowMessage(data.join());	
+	// Expected: ""
+	ShowMessage(IntToStr(data.length);	
+	// Expected: 0
+end;
+```
 
 <hr width=”100%”>
 
@@ -322,6 +711,29 @@ function Slice(StartPos, EndPos: integer): TStringDynArray; overload;
 *Return:*
 >  - Result(TStringDynArray): Array extracted;
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data,piece: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	
+	piece = data.slice(0,1);
+	ShowMessage(piece.join());	
+	// Expected: "apple orange"
+	
+	piece = data.slice(-1,1);
+	ShowMessage(piece.join());	
+	// Expected: "banana apple"
+	
+	piece = data.slice(4,1);
+	ShowMessage(piece.join());	
+	// Expected: "orange"
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -335,6 +747,29 @@ function Slice(StartPos: integer): TStringDynArray; overload;
 
 *Return:*
 >  - Result(TStringDynArray): Array extracted;
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data,piece: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	
+	piece = data.slice(0);
+	ShowMessage(piece.join());	
+	// Expected: "apple orange banana"
+	
+	piece = data.slice(-1);
+	ShowMessage(piece.join());	
+	// Expected: "banana"
+	
+	piece = data.slice(4);
+	ShowMessage(piece.join());	
+	// Expected: "orange"
+end;
+```
 
 <hr width=”100%”>
 
@@ -350,6 +785,29 @@ function Head(EndPos: integer): TStringDynArray;
 *Return:*
 >  - Result(TStringDynArray): Array extracted;
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data,piece: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	
+	piece = data.Head(0);
+	ShowMessage(piece.join());	
+	// Expected: "apple"
+	
+	piece = data.Head(-1);
+	ShowMessage(piece.join());	
+	// Expected: "apple orange banana"
+	
+	piece = data.Head(4);
+	ShowMessage(piece.join());	
+	// Expected: "apple orange"
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -363,6 +821,29 @@ function Tail(StartPos: integer): TStringDynArray;
 
 *Return:*
 >  - Result(TStringDynArray): Array extracted;
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data,piece: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	
+	piece = data.Tail(0);
+	ShowMessage(piece.join());	
+	// Expected: "apple orange banana"
+	
+	piece = data.Tail(-1);
+	ShowMessage(piece.join());	
+	// Expected: "banana"
+	
+	piece = data.Tail(4);
+	ShowMessage(piece.join());	
+	// Expected: "orange banana"
+end;
+```
 
 <hr width=”100%”>
 
@@ -378,6 +859,18 @@ function Save(FileName: string): boolean;
 *Return:*
 >  - Result(Boolean): Return **TRUE** if sucessfull save.
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	
+	data.Save('c:\\data.txt');	
+end;
+```
 
 <hr width=”100%”>
 
@@ -393,6 +886,26 @@ function Load(FileName: string): boolean;
 *Return:*
 >  - Result(Boolean): Return **TRUE** if sucessfull load. Return **FALSE** if file not exist ou can't be load.
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	data.Save('c:\\data.txt');
+	data.Clear();	
+	ShowMessage(data.join());	
+	// Expected: ""
+
+	data.load('c:\\data.txt');
+	ShowMessage(data.join());	
+	// Expected: "apple orange banana"	
+end;
+```
+
+
 <hr width=”100%”>
 
 ```pascal
@@ -406,6 +919,21 @@ function Clone: TStringDynArray;
 
 *Return:*
 >  - Result(TStringDynArray): Copy of array.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data,data2: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+
+	data2 = data.Clone();
+	ShowMessage(data2.join());	
+	// Expected: "apple orange banana"
+end;
+```
 
 <hr width=”100%”>
 
@@ -421,6 +949,21 @@ procedure Assign(const Values: TStringDynArray); overload;
 *Return:*
 >  - None
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data,data2: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+
+	data2.Assign(data);
+	ShowMessage(data2.join());	
+	// Expected: "apple orange banana"
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -434,6 +977,23 @@ procedure Assign(const Values: string; Separator: array of char); overload;
 >  - Separator(array of char): list of separator chars;
 *Return:*
 >  - None
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data.Assign('apple, orange, banana',[',']);
+	ShowMessage(data.join());	
+	// Expected: "apple orange banana"
+
+	data.Assign('apple orange banana',[' ']);
+	ShowMessage(data.join());	
+	// Expected: "apple orange banana"
+end;
+```
 
 <hr width=”100%”>
 
@@ -449,6 +1009,23 @@ procedure Assign(const Values: string; Separator: TStringDynArray); overload;
 
 *Return:*
 >  - None
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data.Assign('apple fruit orange fruit banana',['fruit']);
+	ShowMessage(data.join());	
+	// Expected: "apple orange banana"
+
+	data.Assign('apple fruit orange citric banana',['fruit','citric']);
+	ShowMessage(data.join());	
+	// Expected: "apple orange banana"
+end;
+```
 
 <hr width=”100%”>
 
@@ -466,6 +1043,35 @@ procedure Fill(const Value: string; const StartIndex: integer = 0; const
 *Return:*
 >  - None
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	data.fill('strawberry');
+	ShowMessage(data.join());	
+	// Expected: "strawberry strawberry strawberry"
+
+	data.Clear();
+	data.fill('lime');
+	ShowMessage(data.join());	
+	// Expected: ""
+
+	data.Count = 4;
+	data.fill('grape');
+	ShowMessage(data.join());	
+	// Expected: "grape grape grape grape"
+
+	data.fill('lime',2);
+	ShowMessage(data.join());	
+	// Expected: "grape grape lime lime"
+end;
+```
+
+
 <hr width=”100%”>
 
 ```pascal
@@ -479,6 +1085,23 @@ property Comma: string read GetAsComa write SetAsComma;
 
 *GET(string):*
 >  - Return a strings separed by comma using elements array
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data.Comma = 'apple, orange, banana';
+	ShowMessage(data.join());	
+	// Expected: "apple orange banana"
+	
+	data.Add('strawberry');
+	ShowMessage(data.Comma);	
+	// Expected: "apple, orange, banana, strawberry"
+end;
+```
 
 <hr width=”100%”>
 
@@ -494,6 +1117,29 @@ property Items[Index: Integer]: string read GetItem write SetItem;
 *GET(string):*
 >  - Return a string stored in array at position Index;
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	ShowMessage(data.Items[0]);	
+	// Expected: "apple"
+	
+	ShowMessage(data.Items[-1]);	
+	// Expected: "banana"
+
+	ShowMessage(data.Item[4]);	
+	// Expected: "orange"
+
+	data.Items[4] = 'grape';
+	ShowMessage(data.Join());	
+	// Expected: "apple grape banana"
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -507,6 +1153,28 @@ property Count: Integer read GetCount write SetCount;
 
 *GET(string):*
 >  - Return a length of array;
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	ShowMessage(StrToInt(data.Count));	
+	// Expected: 3
+	
+	data.Count = 4;
+	data.Items[3] = 'grape';
+	ShowMessage(data.Join());
+	// Expected: "apple orange banana grape"
+
+	data.Count = 2;
+	ShowMessage(data.Join());
+	// Expected: "apple orange"
+end;
+```
 
 <hr width=”100%”>
 
@@ -524,6 +1192,24 @@ procedure ForEach(proc: TProcVar<Integer, string>); overload;
 *Return:*
 >  - None
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	data.ForEach(Procedure (Index:Integer;var Item:string)
+				 begin
+				 	Item = Index.ToString()+':'+Item;
+				 end);
+
+	ShowMessage(data.Join());
+	// Expected: "0:apple 1:orange 2:banana"		
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -539,6 +1225,24 @@ procedure ForEach(proc: TProcVar<string>); overload;
 *Return:*
 >  - None
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	data.ForEach(Procedure (var Item:string)
+				 begin
+				 	Item = 'Fruit '+Item;
+				 end);
+
+	ShowMessage(data.Join());
+	// Expected: "Fruit apple Fruit orange Fruit banana"		
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -548,12 +1252,31 @@ procedure ForEach(proc: TProc<Integer, string>); overload;
 > Apply a procedure ('proc') at all elements in array. 
 
 *Params:*
->  - proc(``TProcVar<Integer, string>``): This procedure must be theses params:
+>  - proc(``TProc<Integer, string>``): This procedure must be theses params:
 > 		- Index(Integer): Index of element in array;
 > 		- Item(string): Value of element in array, changes in this variable will **NOT** be apply in array.
 
 *Return:*
 >  - None
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	data.ForEach(Procedure (Index:Integer;Item:string)
+				 begin
+				 	ShowMessage(format('The Item at Index %d is %s',[Index,Item]));
+				 end);
+	Expected:
+		"The Item at Index 0 is apple"
+		"The Item at Index 1 is orange"
+		"The Item at Index 2 is banana"
+end;
+```
 
 <hr width=”100%”>
 
@@ -570,6 +1293,25 @@ procedure ForEach(proc: TProc<string>); overload;
 *Return:*
 >  - None
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	data.ForEach(Procedure (Item:string)
+				 begin
+				 	ShowMessage(format('The Item is %s',[Item]));
+				 end);
+	Expected:
+		"The Item is apple"
+		"The Item is orange"
+		"The Item is banana"
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -583,6 +1325,20 @@ procedure _Of(const Args: array of const);
 
 *Return:*
 >  - None
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data._Of([True, 10, 'words', 'A','z', 3.1416]);
+
+	ShowMessage(data.Join());
+	// Expected: "true 10 words A z 3.1416"
+end;
+```
 
 <hr width=”100%”>
 
@@ -601,6 +1357,33 @@ function Every(func: TFunc<string, Boolean>): Boolean; overload;
 *Return:*
 >  - Result(Boolean): Return **TRUE** if all elements in array pass in test. Otherwise return **FALSE**.
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	data.Every(Function (Item:string):boolean
+				 begin
+				 	Result:= Item.length > 4
+				 end);
+	Expected:
+		True
+
+	data.Every(Function (Item:string):boolean
+				 begin
+					If (Item.length > 0)then									 
+				 		Result := Item[1] in ['a'..'f'];
+				 	else
+				 		Result := False;
+				 end);
+	Expected:
+		False
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -618,6 +1401,36 @@ function Every(func: TFunc<string, Integer, Boolean>): Boolean; overload;
 *Return:*
 >  - Result(Boolean): Return **TRUE** if all elements in array pass in test. Otherwise return **FALSE**.
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['apple','orange','banana'];
+	data.Every(Function (Index:integer; Item:string):boolean
+				 begin
+					If (Index = 0) then				 
+				 		Result:= Item.length = 5
+				 	else:
+				 		Result:= Item.length = 6
+				 end);
+	Expected:
+		True
+
+	data.Every(Function (Index:integer; Item:string):boolean
+				 begin
+					If (Index > 1) then
+					  Exit(True);
+
+					Result:= Item = 'apple';				 	
+				 end);
+	Expected:
+		False
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -633,6 +1446,26 @@ function Filter(func: TFunc<string, Boolean>): TStringDynArray; overload;
 
 *Return:*
 >  - Result(TStringDynArray): Return a new array. If none elements pass in test or 'func' is not assigned, will return a empty array.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data,data2: TStringDynArray;
+begin
+	data = ['grape','apple','orange','banana'];
+	data2 = data.Filter(Function (Item:string):boolean
+				 		begin				 		
+				 			If (Item.length > 0)
+				 				Result:= Item[1] in ['a'..'g']
+				 			else
+				 				Result:= False;
+				 		end);
+	ShowMessage(data2.Join());
+	Expected: "grape apple banana"
+end;
+```
 
 <hr width=”100%”>
 
@@ -650,6 +1483,25 @@ function Filter(func: TFunc<string, Integer, Boolean>): TStringDynArray; overloa
 
 *Return:*
 >  - Result(TStringDynArray): Return a new array. If none elements pass in test or 'func' is not assigned, will return a empty array.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data,data2: TStringDynArray;
+begin
+	data = ['grape','apple','orange','banana'];
+	data2 = data.Filter(Function (Index:integer; Item:string):boolean
+				 		begin
+				 			if (Index = 0) then
+				 				Exit(True);
+				 			Result:= Item.length > 5;
+				 		end);
+	ShowMessage(data2.Join());
+	Expected: "grape orange banana"
+end;
+```
 
 <hr width=”100%”>
 
@@ -684,6 +1536,32 @@ function Find(func: TFunc<string,  Boolean>): string; overload;
 *Return:*
 >  - Result(string): Return the vector element that pass the test. If none elements pass in test or 'func' is not assigned, will return a empty string.
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data TStringDynArray;
+	found:string;
+begin
+	data = ['grape','apple','orange','banana'];
+	found = data.Find(Function (Item:string):boolean
+				 		begin				 			
+				 			Result:= (Item = 'orange') or (Item = 'apple');
+				 		end);
+	ShowMessage(found);
+	Expected: "apple"
+
+	found = data.Find(Function (Item:string):boolean
+				 		begin				 			
+				 			Result:= (Item = 'strawberry') or (Item.length = 3);
+				 		end);
+	ShowMessage(found);
+	Expected: ""
+
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -697,6 +1575,35 @@ procedure Shift(aCount: Integer = 1);
 
 *Return:*
 >  - None
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['grape','lime','apple','orange'];
+	
+	data.Shift();
+	ShowMessage(data.Join());
+	// Expected: "lime apple orange grape"
+
+	data.Shift();
+	ShowMessage(data.Join());
+	// Expected: "apple orange grape lime"
+
+	data.Shift();
+	ShowMessage(data.Join());
+	// Expected: "orange grape lime apple"
+
+	data = ['grape','lime','apple','orange'];
+
+	data.Shift(3);
+	ShowMessage(data.Join());
+	// Expected: "orange grape lime apple"
+end;
+```
 
 <hr width=”100%”>
 
@@ -712,6 +1619,35 @@ procedure Unshift(aCount: Integer = 1);
 *Return:*
 >  - None
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data = ['grape','lime','apple','orange'];
+	
+	data.Unshift();
+	ShowMessage(data.Join());
+	// Expected: "orange grape lime apple"
+
+	data.Unshift();
+	ShowMessage(data.Join());
+	// Expected: "apple orange grape lime"
+
+	data.Unshift();
+	ShowMessage(data.Join());
+	// Expected: "lime apple orange grape"
+
+	data = ['grape','lime','apple','orange'];
+
+	data.Unshift(3);
+	ShowMessage(data.Join());
+	// Expected: "lime apple orange grape"
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -725,6 +1661,22 @@ Create a array with a 'self' and append the elements of 'Values' that not presen
 
 *Return:*
 >  - Result(TStringDynArray): new array with a union of elements.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data,data2,data3: TStringDynArray;
+begin
+	data = ['lime','apple','orange','banana','apple'];
+	data2 = ['strawberry','grape','apple','orange'];
+	
+	data3 = data.Union(data2);
+	ShowMessage(data3.Join());
+	// Expected: "lime apple orange banana apple strawberry grape"
+end;
+```
 
 <hr width=”100%”>
 
@@ -740,6 +1692,22 @@ Create a array with a 'self' and remove the elements common with 'Values'.
 *Return:*
 >  - Result(TStringDynArray): new array with a union of elements.
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data,data2,data3: TStringDynArray;
+begin
+	data = ['lime','apple','orange','banana','apple'];
+	data2 = ['strawberry','grape','apple','orange'];
+	
+	data3 = data.Diference(data2);
+	ShowMessage(data3.Join());
+	// Expected: "lime banana"
+end;
+```
+
 <hr width=”100%”>
 
 ```pascal
@@ -753,6 +1721,22 @@ Create a array with a 'self' and remove the elements **NOT** common with 'Values
 
 *Return:*
 >  - Result(TStringDynArray): new array with a union of elements.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data,data2,data3: TStringDynArray;
+begin
+	data = ['lime','apple','orange','banana','apple'];
+	data2 = ['strawberry','grape','apple','orange'];
+	
+	data3 = data.Interception(data2);
+	ShowMessage(data3.Join());
+	// Expected: "apple orange apple"
+end;
+```
 
 <hr width=”100%”>
 
@@ -768,6 +1752,24 @@ Create a array with a 'self', append all elements of 'Values', then remove the e
 *Return:*
 >  - Result(TStringDynArray): new array with a union of elements.
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data,data2,data3: TStringDynArray;
+begin
+	data = ['lime','apple','orange','banana','apple'];
+	data2 = ['strawberry','grape','apple','orange'];
+	
+	data3 = data.Exclusion(data2);
+	ShowMessage(data3.Join());
+	// Expected: "lime banana strawberry grape"
+end;
+```
+
+<hr width=”100%”>
+
 ```pascal
 function Same(const Values: TStringDynArray): Boolean;
  ```
@@ -780,6 +1782,35 @@ Compare a 'self' array with a 'Values' array.
 *Return:*
 >  - Result(Boolean): Return **TRUE** if all elements in same position has the same value. Otherwise return **FALSE**.
 
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data,data2: TStringDynArray;
+begin
+	data  = ['apple','orange','banana','orange'];
+	data2 = ['apple','orange','banana','orange'];
+	
+	data.Same(data2);
+	// Expected: TRUE
+
+	data  = ['apple','orange','banana','orange'];
+	data2 = ['banana','apple','orange','banana'];
+	
+	data.Same(data2);
+	// Expected: FALSE
+
+	data  = ['lime','orange','banana','orange'];
+	data2 = ['banana','apple','orange','banana'];
+	
+	data.Same(data2);
+	// Expected: FALSE
+end;
+```
+
+<hr width=”100%”>
+
 ```pascal
 function SameData(const Values: TStringDynArray): Boolean;
  ```
@@ -791,3 +1822,30 @@ Compare a 'self' array with a 'Values' array.
 
 *Return:*
 >  - Result(Boolean): Return **TRUE** if all elements in any position has the same value. Otherwise return **FALSE**.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data,data2: TStringDynArray;
+begin
+	data  = ['apple','orange','banana','orange'];
+	data2 = ['apple','orange','banana','orange'];
+	
+	data.SameData(data2);
+	// Expected: TRUE
+
+	data  = ['apple','orange','banana','orange'];
+	data2 = ['banana','apple','orange','banana'];
+	
+	data.SameData(data2);
+	// Expected: TRUE
+
+	data  = ['lime','orange','banana','orange'];
+	data2 = ['banana','apple','orange','banana'];
+	
+	data.SameData(data2);
+	// Expected: FALSE
+end;
+```
