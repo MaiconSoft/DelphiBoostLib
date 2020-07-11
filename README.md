@@ -1876,3 +1876,203 @@ begin
 	// Expected: FALSE
 end;
 ```
+<hr width=”100%”>
+
+```pascal
+function RemoveDuplicate: Integer;
+ ```
+
+Scan and remove all duplicate items.
+
+*Params:*
+>  - None
+
+*Return:*
+>  - Result(Integer): Return a number of duplicates removed.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+	duplicateCount : Integer;
+begin
+	data  = ['apple','orange','banana','orange','banana'];
+	
+	duplicateCount = data.RemoveDuplicate();
+	ShowMessage(data.Join())
+	// Expected: "apple orange banana"
+	//	 		 duplicateCount = 2
+end;
+```
+<hr width=”100%”>
+
+```pascal
+procedure Trim;
+ ```
+
+For all Items remove white spaces in torn of item, and if it has only spaces or is empty, then will be removed.
+- For default white spaces are treated as part of item, in functions like **Assign, Comma, Join etc**
+
+*Params:*
+>  - None
+
+*Return:*
+>  - Result(Integer): Return a number of duplicates removed.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+	duplicateCount : Integer;
+begin
+	data  = ['  apple  ', '  ', '  orange', 'banana  ', '',''];
+	
+	data.Trim();
+	ShowMessage(data.Join())
+	// Expected: "apple orange banana"
+end;
+```
+
+<hr width=”100%”>
+
+
+```pascal
+function First:string;
+ ```
+Return the value of fist element in array or empty string if not have one.
+
+*Params:*
+>  - None
+
+*Return:*
+>  - Result(string): Return the fist element.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data  = ['apple','orange','banana';
+	
+	ShowMessage(data.Fist);
+	// Expected: "apple"
+
+	data.Clear();
+
+	ShowMessage(data.Fist);
+	// Expected: ""	
+end;
+```
+
+<hr width=”100%”>
+
+```pascal
+function Last:string;
+ ```
+Return the value of last element in array or empty string if not have one.
+
+*Params:*
+>  - None
+
+*Return:*
+>  - Result(string): Return the last element.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data  = ['apple','orange','banana';
+	
+	ShowMessage(data.Last);
+	// Expected: "banana"
+
+	data.Clear();
+
+	ShowMessage(data.Last);
+	// Expected: ""	
+end;
+```
+
+<hr width=”100%”>
+
+```pascal
+function PushFront:string;
+ ```
+Return the value of first element in array, then remove it from array. if not have one, return a empty string.
+
+*Params:*
+>  - None
+
+*Return:*
+>  - Result(string): Return the first element.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data  = ['apple','orange','banana';
+	
+	ShowMessage(data.PushFront);
+	// Expected: "apple"
+
+	ShowMessage(data.PushFront);
+	// Expected: "orange"
+
+	ShowMessage(data.PushFront);
+	// Expected: "banana"
+
+	ShowMessage(data.PushFront);
+	// Expected: ""
+	
+end;
+```
+
+<hr width=”100%”>
+
+```pascal
+function PushBack:string;
+ ```
+Return the value of last element in array, then remove it from array. if not have one, return a empty string.
+
+*Params:*
+>  - None
+
+*Return:*
+>  - Result(string): Return the last element.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data  = ['apple','orange','banana';
+	
+	ShowMessage(data.PushBack);
+	// Expected: "banana"
+
+	ShowMessage(data.PushBack);
+	// Expected: "orange"
+
+	ShowMessage(data.PushBack);
+	// Expected: "apple"
+
+	ShowMessage(data.PushBack);
+	// Expected: ""	
+end;
+```
+
+<hr width=”100%”>

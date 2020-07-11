@@ -67,6 +67,9 @@ type
     class procedure Exclusion<T>(const a, b: TArray<T>; var Values: TArray<T>); static;
     class function Same<T>(const a, b: TArray<T>): boolean; static;
     class function SameData<T>(const a, b: TArray<T>): boolean; static;
+    class function RemoveDuplicate<T>(var a: TArray<T>): Integer; static;
+    class function PushBack<T>(var a: TArray<T>; const Default: T): T; static;
+    class function PushFront<T>(var a: TArray<T>; const Default: T): T; static;
   end;
 
   TStringHelperDynArray = record helper for TStringDynArray
@@ -132,6 +135,13 @@ type
     function Exclusion(const Values: TStringDynArray): TStringDynArray;
     function Same(const Values: TStringDynArray): Boolean;
     function SameData(const Values: TStringDynArray): Boolean;
+    function RemoveDuplicate: Integer;
+    procedure Trim;
+    function PushBack: string;
+    function PushFront: string;
+    function First:string;
+    function Last:string;
+
 
 
     // procedure From(const Values: TStringDynArray; proc: TProc<Integer, string>); overload;
@@ -160,6 +170,13 @@ begin
   end;
 end;
 
+function TStringHelperDynArray.Last: string;
+begin
+  if count = 0 then
+    exit('');
+  Result:= self[count-1];
+end;
+
 function TStringHelperDynArray.LastIndexOf(const Value: string; EndPos: Integer): Integer;
 begin
   Result := TArray.LastIndexOf<string>(Value, self, EndPos);
@@ -173,6 +190,16 @@ begin
     Assign(TFile.ReadAllLines(FileName));
     Result := true;
   end;
+end;
+
+function TStringHelperDynArray.PushBack: string;
+begin
+  Result:=  TArray.PushBack<string>(self);
+end;
+
+function TStringHelperDynArray.PushFront: string;
+begin
+  Result:=  TArray.PushFront<string>(self);
 end;
 
 procedure TStringHelperDynArray.Sort;
@@ -269,6 +296,13 @@ begin
   TArray.Find<string>(func, self, Result);
 end;
 
+function TStringHelperDynArray.First: string;
+begin
+  if count = 0 then
+    exit('');
+  Result:= self[0];
+end;
+
 function TStringHelperDynArray.Find(func: TFunc<string, Integer, Boolean>): string;
 begin
   Result := '';
@@ -353,6 +387,11 @@ begin
   TArray.Remove<string>(Item, count, self);
 end;
 
+function TStringHelperDynArray.RemoveDuplicate: Integer;
+begin
+  Result := TArray.RemoveDuplicate<string>(self);
+end;
+
 procedure TStringHelperDynArray.Reverse;
 begin
   TArray.Reverse<string>(self);
@@ -421,6 +460,19 @@ end;
 function TStringHelperDynArray.Tail(StartPos: integer): TStringDynArray;
 begin
   Result := Slice(StartPos);
+end;
+
+procedure TStringHelperDynArray.Trim;
+var
+  i: Integer;
+begin
+  if Count > 0 then
+    for i := Count - 1 downto 0 do
+    begin
+      self[i] := Self[i].Trim;
+      if self[i].IsEmpty then
+        Delete(i);
+    end;
 end;
 
 function TStringHelperDynArray.Union(const Values: TStringDynArray): TStringDynArray;
@@ -1019,6 +1071,30 @@ begin
   end;
 end;
 
+class function TArray.PushBack<T>(var a: TArray<T>; const Default: T): T;
+var
+  ALength: Integer;
+begin
+  ALength := Length(a);
+  if ALength = 0 then
+    exit(Default);
+
+  Result := a[ALength - 1];
+  SetLength(ALength - 1);
+end;
+
+class function TArray.PushFront<T>(var a: TArray<T>; const Default: T): T;
+var
+  ALength: Integer;
+begin
+  ALength := Length(a);
+  if ALength = 0 then
+    exit(Default);
+
+  Result := a[0];
+  TArray.Delete<T>(0, a);
+end;
+
 class procedure TArray.Remove<T>(Item: T; count: integer; var Values: TArray<T>);
 var
   i, index: Integer;
@@ -1033,6 +1109,30 @@ begin
     TArray.Delete<T>(index, 1, Values);
     dec(count);
   until (count = 0);
+end;
+
+class function TArray.RemoveDuplicate<T>(var a: TArray<T>): Integer;
+var
+  ALength: Integer;
+  i: Integer;
+  j: Integer;
+begin
+  ALength := length(a);
+  Result := 0;
+
+  if ALength < 2 then
+    exit;
+
+  for i := ALength - 1 downto 1 do
+    for j := i - 1 downto 0 do
+    begin
+      if TComparer<T>.Default.Compare(a[i], a[j]) = 0 then
+      begin
+        TArray.Delete<T>(i, a);
+        inc(Result);
+        Break;
+      end;
+    end;
 end;
 
 class procedure TArray.Reverse<T>(var Values: TArray<T>);
@@ -1060,7 +1160,7 @@ begin
   begin
     for i := 0 to High(a) do
     begin
-      if  TComparer<T>.Default.Compare(a[i], b[i]) <> 0 then
+      if TComparer<T>.Default.Compare(a[i], b[i]) <> 0 then
         exit;
     end;
     Result := true;
