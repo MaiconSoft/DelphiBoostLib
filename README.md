@@ -2076,3 +2076,39 @@ end;
 ```
 
 <hr width=”100%”>
+
+```pascal
+function Has(const value: string): Boolean;
+ ```
+Return **TRUE** if array has one ou more items with value 'value'.
+
+*Params:*
+>  - value(string): String value to compare with items.
+
+*Return:*
+>  - Result(Boolean): Return **TRUE** if has 'value', otherwise return **FALSE**.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+begin
+	data  = ['apple','orange','banana';
+	
+	If (data.Has('orange')) then
+		ShowMessage("This array has orange");
+	else
+		ShowMessage("This array hasn't orange");
+	// Expected: "This array has orange"
+
+	If (data.Has('strawberry')) then
+		ShowMessage("This array has strawberry");
+	else
+		ShowMessage("This array hasn't strawberry");
+	// Expected: "This array hasn't strawberry"
+end;
+```
+
+<hr width=”100%”>

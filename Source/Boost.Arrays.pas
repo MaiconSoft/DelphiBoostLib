@@ -139,8 +139,9 @@ type
     procedure Trim;
     function PushBack: string;
     function PushFront: string;
-    function First:string;
-    function Last:string;
+    function First: string;
+    function Last: string;
+    function Has(const value: string): Boolean;
 
 
 
@@ -174,7 +175,7 @@ function TStringHelperDynArray.Last: string;
 begin
   if count = 0 then
     exit('');
-  Result:= self[count-1];
+  Result := self[count - 1];
 end;
 
 function TStringHelperDynArray.LastIndexOf(const Value: string; EndPos: Integer): Integer;
@@ -194,12 +195,12 @@ end;
 
 function TStringHelperDynArray.PushBack: string;
 begin
-  Result:=  TArray.PushBack<string>(self);
+  Result := TArray.PushBack<string>(self,'');
 end;
 
 function TStringHelperDynArray.PushFront: string;
 begin
-  Result:=  TArray.PushFront<string>(self);
+  Result := TArray.PushFront<string>(self,'');
 end;
 
 procedure TStringHelperDynArray.Sort;
@@ -298,9 +299,9 @@ end;
 
 function TStringHelperDynArray.First: string;
 begin
-  if count = 0 then
+  if Count = 0 then
     exit('');
-  Result:= self[0];
+  Result := self[0];
 end;
 
 function TStringHelperDynArray.Find(func: TFunc<string, Integer, Boolean>): string;
@@ -348,6 +349,7 @@ function TStringHelperDynArray.GetItem(Index: Integer): string;
 begin
   Result := Self[TArray.SurroundIndex<string>(Index, self)];
 end;
+
 
 function TStringHelperDynArray.IndexOf(const Value: string; StartPos: Integer =
   0): Integer;
@@ -437,6 +439,7 @@ begin
   Self[TArray.SurroundIndex<string>(Index, self)] := Value;
 end;
 
+
 procedure TStringHelperDynArray.Shift(aCount: Integer = 1);
 begin
   TArray.Shift<string>(self);
@@ -450,6 +453,11 @@ end;
 function TStringHelperDynArray.Slice(StartPos: integer): TStringDynArray;
 begin
   TArray.Slice<string>(StartPos, Self, Result);
+end;
+
+function TStringHelperDynArray.Has(const value: string): Boolean;
+begin
+  Result := IndexOf(value) > -1;
 end;
 
 function TStringHelperDynArray.Head(EndPos: integer): TStringDynArray;
@@ -1080,7 +1088,7 @@ begin
     exit(Default);
 
   Result := a[ALength - 1];
-  SetLength(ALength - 1);
+  SetLength(a,ALength - 1);
 end;
 
 class function TArray.PushFront<T>(var a: TArray<T>; const Default: T): T;
