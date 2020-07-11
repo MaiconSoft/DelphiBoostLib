@@ -254,7 +254,7 @@ var
 	data: TStringDynArray;
 	index: Integer;
 begin
-	data = ['apple','orange','apple' banana'];
+	data = ['apple','orange','apple' 'banana'];
 
 	index = data.IndexOf('apple');
 	// Expected: 0
@@ -300,7 +300,7 @@ var
 	data: TStringDynArray;
 	index: Integer;
 begin
-	data = ['apple','orange','apple', banana'];
+	data = ['apple','orange','apple', 'banana'];
 
 	index = data.LastIndexOf('apple');
 	// Expected: 2
