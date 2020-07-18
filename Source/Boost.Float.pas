@@ -10,7 +10,7 @@ interface
 
 uses
   SysUtils, Classes, System.Generics.Collections, System.Generics.Defaults,
-  logutils, System.types,Boost.Arrays, Boost.Strings;
+  logutils, System.types, Boost.Arrays, Boost.Strings;
 
 const
   DEFAULT_VALUE: Double = 0.0;
@@ -92,6 +92,25 @@ type
     function First: Double;
     function Last: Double;
     function Has(const value: Double): Boolean;
+//    function Max:Double;
+//    function Min:Double;
+//    function Mean:Double;
+//    function Sum:Double;overload;
+//    procedure Normalize;
+//    procedure Multiply(value:Double); overload;
+//    procedure Divide(value:Double); overload;
+//    procedure Sum(value:Double); overload;
+//    procedure Apply(func: Tfunc<double,double>);
+//    function Sum(values:TDoubleDynArray):TDoubleDynArray; overload;
+//    function Multiply(value:TDoubleDynArray):TDoubleDynArray; overload;
+//    function Divide(value:TDoubleDynArray):TDoubleDynArray; overload;
+//    procedure sqr;overload;
+//    procedure sqrt;overload;
+//    function sqr(value:TDoubleDynArray):TDoubleDynArray; overload;
+//    function sqrt(value:TDoubleDynArray):TDoubleDynArray; overload;
+//    procedure Clamp(aMin,aMax:Double);
+//    procedure Map(inMin,inMax,outMin,outMax:Double);
+
   end;
 
 implementation
