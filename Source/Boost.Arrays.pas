@@ -29,7 +29,8 @@ type
       Integer = MaxInt): Integer; static;
     class function CountItems<T>(const Value: T; const Values: TArray<T>):
       Integer; static;
-    class procedure Remove<T>(Item: T; count: integer; var Values: TArray<T>); static;
+    class procedure Remove<T>(Item: T; count: integer; var Values: TArray<T>);
+      overload; static;
     class procedure Slice<T>(StartPos, EndPos: integer; const Values: TArray<T>;
       var Return: TArray<T>); overload; static;
     class procedure Slice<T>(StartPos: integer; const Values: TArray<T>; var
@@ -54,6 +55,10 @@ type
       var Return: TArray<T>); overload; static;
     class procedure Filter<T>(Func: TFunc<T, Integer, Boolean>; const Values:
       TArray<T>; var Return: TArray<T>); overload; static;
+    class procedure Remove<T>(Func: TFunc<T, Boolean>; var Values: TArray<T>);
+      overload; static;
+    class procedure Remove<T>(Func: TFunc<T, Integer, Boolean>; var Values:
+      TArray<T>); overload; static;
     class function Find<T>(Func: TFunc<T, Boolean>; const Values: TArray<T>; var
       value: T): Boolean; overload; static;
     class function Find<T>(Func: TFunc<T, Integer, Boolean>; const Values:
@@ -72,8 +77,6 @@ type
     class function PushFront<T>(var a: TArray<T>; const Default: T): T; static;
   end;
 
-
- 
 implementation
 
 
@@ -641,6 +644,42 @@ begin
   until (count = 0);
 end;
 
+class procedure TArray.Remove<T>(Func: TFunc<T, Integer, Boolean>; var Values: TArray<T>);
+var
+  Alength: Integer;
+  i: Integer;
+begin
+  Alength := Length(Values);
+  if (not Assigned(Func)) then
+    exit();
+
+  for i := Alength - 1 downto 0 do
+  begin
+    if Func(Values[i], i) then
+    begin
+      TArray.Delete<T>(i, Values);
+    end;
+  end;
+end;
+
+class procedure TArray.Remove<T>(Func: TFunc<T, Boolean>; var Values: TArray<T>);
+var
+  Alength: Integer;
+  i: Integer;
+begin
+  Alength := Length(Values);
+  if (not Assigned(Func)) then
+    exit();
+
+  for i := Alength - 1 downto 0 do
+  begin
+    if Func(Values[i]) then
+    begin
+      TArray.Delete<T>(i, Values);
+    end;
+  end;
+end;
+
 class function TArray.RemoveDuplicate<T>(var a: TArray<T>): Integer;
 var
   ALength: Integer;
@@ -773,7 +812,6 @@ begin
   for i := StartPos to EndPos do
     Return[i - StartPos] := Values[i];
 end;
-
 
 end.
 
