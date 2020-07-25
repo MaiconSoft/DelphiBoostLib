@@ -54,6 +54,8 @@ type
     function CountItems(Item: <TYPE>): Integer;
     procedure Remove(Item: <TYPE>); overload;
     procedure Remove(Item: <TYPE>; count: Integer); overload;
+    function Remove(func: TFunc<<TYPE>, Boolean>): T<TYPE>DynArray; overload;
+    function Remove(func: TFunc<<TYPE>, Integer, Boolean>): T<TYPE>DynArray; overload;
     procedure Clear();
     function Slice(StartPos, EndPos: Integer): T<TYPE>DynArray; overload;
     function Slice(StartPos: Integer): T<TYPE>DynArray; overload;
@@ -400,6 +402,17 @@ end;
 procedure T<TYPE>HelperDynArray.Remove(Item: <TYPE>; count: Integer);
 begin
   TArray.Remove<<TYPE>>(Item, count, self);
+end;
+
+function T<TYPE>HelperDynArray.Remove(func: TFunc<<TYPE>, Integer, Boolean>):
+  T<TYPE>HelperDynArray;
+begin
+  TArray.Remove<<TYPE>>(func, self);
+end;
+
+function T<TYPE>HelperDynArray.Remove(func: TFunc<<TYPE>, Boolean>): T<TYPE>HelperDynArray;
+begin
+  TArray.Remove<<TYPE>>(func, self);
 end;
 
 function T<TYPE>HelperDynArray.RemoveDuplicate: Integer;
