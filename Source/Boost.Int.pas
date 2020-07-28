@@ -10,7 +10,8 @@ interface
 
 uses
   SysUtils, Classes, System.Generics.Collections, System.types,
-  System.Generics.Defaults, logutils, Boost.Arrays, Boost.Strings;
+  System.Generics.Defaults, logutils, Boost.Arrays, Boost.Strings, Boost.Math,
+  Math;
 
 const
   DEFAULT_VALUE: Integer = 0;
@@ -94,6 +95,20 @@ type
     function First: Integer;
     function Last: Integer;
     function Has(const value: Integer): Boolean;
+
+    // Math functions
+    class function Primes(const Limit: Integer): TIntegerDynArray;
+    procedure Apply(func: Tfunc<Integer, Integer>);
+    function Accum(func: Tfunc<Integer, Integer>): Integer;
+    function Select(func: Tfunc<Integer, Integer, Integer>; Default: Integer = 0):
+      Integer;
+    procedure Clamp(lo, hi: Integer);
+    procedure Map(in_min, in_max, out_min, out_max: Integer);
+    function Sum: Integer;
+    function Max: Integer;
+    function Min: Integer;
+    function Mean: Integer;
+    procedure Normalize;
   end;
 
 implementation
@@ -182,6 +197,75 @@ begin
   end;
 end;
 
+procedure TIntegerHelperDynArray.Map(in_min, in_max, out_min, out_max: Integer);
+begin
+  Apply(
+    function(Item: Integer): Integer
+    begin
+      result := TMath.Map(Item, in_min, in_max, out_min, out_max);
+    end);
+end;
+
+function TIntegerHelperDynArray.Max: Integer;
+begin
+  Select(
+    function(Item, Last: Integer): Integer
+    begin
+      Result := Math.max(Item, Last);
+    end, -MaxInt - 1);
+end;
+
+function TIntegerHelperDynArray.Mean: Integer;
+var
+  _sum: Integer;
+begin
+  _sum := Sum;
+  Apply(
+    function(Item: Integer): Integer
+    begin
+      result := Item / _sum;
+    end);
+end;
+
+function TIntegerHelperDynArray.Min: Integer;
+begin
+  Select(
+    function(Item, Last: Integer): Integer
+    begin
+      Result := Math.Min(Item, Last);
+    end, MaxInt);
+end;
+
+procedure TIntegerHelperDynArray.Normalize;
+var
+  _max: Integer;
+begin
+  _max := Max;
+  Apply(
+    function(Item: Integer): Integer
+    begin
+      result := Item div _max;
+    end);
+end;
+
+class function TIntegerHelperDynArray.Primes(const Limit: Integer): TIntegerDynArray;
+var
+  i: Integer;
+begin
+  if Limit < 2 then
+    exit;
+
+  Result.Add(2);
+
+  i := 3;
+  while i <= Limit do
+  begin
+    if TMath.IsPrime(i) then
+      Result.Add(i);
+    inc(i, 2);
+  end;
+end;
+
 function TIntegerHelperDynArray.PushBack: Integer;
 begin
   Result := TArray.PushBack<Integer>(self, DEFAULT_VALUE);
@@ -202,6 +286,18 @@ begin
   Insert(Count, Value);
 end;
 
+function TIntegerHelperDynArray.Accum(func: Tfunc<Integer, Integer>): Integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  if (count = 0) or (not Assigned(func)) then
+    exit;
+
+  for i := 0 to High(self) do
+    inc(Result, func(self[i]));
+end;
+
 procedure TIntegerHelperDynArray.Add(Values: TIntegerDynArray);
 var
   i: Integer;
@@ -209,6 +305,19 @@ begin
   if Values.count > 0 then
     for i := 0 to High(Values) do
       add(Values[i]);
+end;
+
+procedure TIntegerHelperDynArray.Apply(func: Tfunc<Integer, Integer>);
+var
+  i: Integer;
+begin
+  if (count = 0) or (not Assigned(func)) then
+    exit;
+
+  for i := 0 to High(self) do
+  begin
+    self[i] := func(self[i]);
+  end;
 end;
 
 procedure TIntegerHelperDynArray.Assign(const Values: string; Separator: TStringDynArray);
@@ -237,6 +346,15 @@ end;
 procedure TIntegerHelperDynArray.Assign(const Values: TIntegerDynArray);
 begin
   Self := Values.Clone;
+end;
+
+procedure TIntegerHelperDynArray.Clamp(lo, hi: Integer);
+begin
+  Apply(
+    function(Item: Integer): Integer
+    begin
+      result := TMath.Clamp(Item, lo, hi);
+    end);
 end;
 
 procedure TIntegerHelperDynArray.Clear;
@@ -450,6 +568,21 @@ begin
   Result := True;
 end;
 
+function TIntegerHelperDynArray.Select(func: Tfunc<Integer, Integer, Integer>;
+  Default: Integer = 0): Integer;
+var
+  i: Integer;
+begin
+  Result := Default;
+  if (Count = 0) or (not Assigned(func)) then
+    exit;
+
+  for i := 0 to High(self) do
+  begin
+    Result := func(self[i], Result);
+  end;
+end;
+
 procedure TIntegerHelperDynArray.SetAsComma(const Value: string);
 begin
   Assign(Value.Split([',']));
@@ -504,6 +637,15 @@ procedure TIntegerHelperDynArray.Sort(const Comparison: TComparison<Integer>;
   Index, Count: Integer);
 begin
   TArray.Sort<Integer>(self, TComparer<Integer>.Construct(Comparison), Index, Count);
+end;
+
+function TIntegerHelperDynArray.Sum: Integer;
+begin
+  Accum(
+    function(Item: Integer): Integer
+    begin
+      Result := Item;
+    end);
 end;
 
 procedure TIntegerHelperDynArray._Of(const Args: array of const);
