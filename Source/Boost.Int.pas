@@ -98,6 +98,7 @@ type
 
     // Math functions
     class function Primes(const Limit: Integer): TIntegerDynArray;
+    class function Hailstone(const n: Integer): TIntegerDynArray;
     procedure Apply(func: Tfunc<Integer, Integer>);
     function Accum(func: Tfunc<Integer, Integer>): Integer;
     function Select(func: Tfunc<Integer, Integer, Integer>; Default: Integer = 0):
@@ -601,6 +602,19 @@ end;
 function TIntegerHelperDynArray.Slice(StartPos: Integer): TIntegerDynArray;
 begin
   TArray.Slice<Integer>(StartPos, Self, Result);
+end;
+
+class function TIntegerHelperDynArray.Hailstone(const n: Integer): TIntegerDynArray;
+begin
+  Result.Add(n);
+  while n <> 1 do
+  begin
+    if Odd(n) then
+      n := (3 * n) + 1
+    else
+      n := n div 2;
+    Result.Add(n);
+  end;
 end;
 
 function TIntegerHelperDynArray.Has(const value: Integer): Boolean;
