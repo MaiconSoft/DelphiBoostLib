@@ -110,6 +110,8 @@ type
     function ToString(aCount: Integer): string; overload;
     function ToString(aStart, aEnd: Integer): string; overload;
     function ToString(aStart, aEnd, bStart, bEnd: Integer): string; overload;
+    class function Random(Size, MinInclusive, MaxInclusive: Integer):
+      TIntegerDynArray; static;
   end;
 
 implementation
@@ -503,6 +505,19 @@ end;
 procedure TIntegerHelperDynArray.Remove(Item: Integer; count: Integer);
 begin
   TArray.Remove<Integer>(Item, count, self);
+end;
+
+class function TIntegerHelperDynArray.Random(Size, MinInclusive, MaxInclusive:
+  Integer): TIntegerDynArray;
+var
+  i: Integer;
+begin
+  Result.Count := Size;
+  if Size = 0 then
+    exit;
+  Randomize;
+  for i := 0 to High(result) do
+    Result[i] := RandomRange(MinInclusive, MaxInclusive);
 end;
 
 function TIntegerHelperDynArray.Remove(func: TFunc<Integer, Integer, Boolean>):
