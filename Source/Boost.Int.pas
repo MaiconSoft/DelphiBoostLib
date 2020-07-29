@@ -95,10 +95,6 @@ type
     function First: Integer;
     function Last: Integer;
     function Has(const value: Integer): Boolean;
-
-    // Math functions
-    class function Primes(const Limit: Integer): TIntegerDynArray;
-    class function Hailstone(n: Integer): TIntegerDynArray;
     procedure Apply(func: Tfunc<Integer, Integer>);
     function Accum(func: Tfunc<Integer, Integer>): Integer;
     function Select(func: Tfunc<Integer, Integer, Integer>; Default: Integer = 0):
@@ -110,6 +106,10 @@ type
     function Min: Integer;
     function Mean: Integer;
     procedure Normalize;
+    function ToString(): string; overload;
+    function ToString(aCount: Integer): string; overload;
+    function ToString(aStart, aEnd: Integer): string; overload;
+    function ToString(aStart, aEnd, bStart, bEnd: Integer): string; overload;
   end;
 
 implementation
@@ -247,24 +247,6 @@ begin
     begin
       result := Item div _max;
     end);
-end;
-
-class function TIntegerHelperDynArray.Primes(const Limit: Integer): TIntegerDynArray;
-var
-  i: Integer;
-begin
-  if Limit < 2 then
-    exit;
-
-  Result.Add(2);
-
-  i := 3;
-  while i <= Limit do
-  begin
-    if TMath.IsPrime(i) then
-      Result.Add(i);
-    inc(i, 2);
-  end;
 end;
 
 function TIntegerHelperDynArray.PushBack: Integer;
@@ -604,19 +586,6 @@ begin
   TArray.Slice<Integer>(StartPos, Self, Result);
 end;
 
-class function TIntegerHelperDynArray.Hailstone(n: Integer): TIntegerDynArray;
-begin
-  Result.Add(n);
-  while n <> 1 do
-  begin
-    if Odd(n) then
-      n := (3 * n) + 1
-    else
-      n := n div 2;
-    Result.Add(n);
-  end;
-end;
-
 function TIntegerHelperDynArray.Has(const value: Integer): Boolean;
 begin
   Result := IndexOf(value) > -1;
@@ -630,6 +599,46 @@ end;
 function TIntegerHelperDynArray.Tail(StartPos: Integer): TIntegerDynArray;
 begin
   Result := Slice(StartPos);
+end;
+
+function TIntegerHelperDynArray.ToString(aCount: Integer): string;
+var
+  l: Integer;
+begin
+  if aCount <= 0 then
+    exit('');
+
+  l := aCount;
+
+  Result := ToString(0, l - 1, -l, -1);
+end;
+
+function TIntegerHelperDynArray.ToString(aStart, aEnd, bStart, bEnd: Integer): string;
+var
+  a, b: TIntegerDynArray;
+begin
+  aStart := TArray.SurroundIndex<Integer>(aStart, self);
+  aEnd := TArray.SurroundIndex<Integer>(aEnd, self);
+  bStart := TArray.SurroundIndex<Integer>(bStart, self);
+  bEnd := TArray.SurroundIndex<Integer>(bEnd, self);
+
+  if (aEnd - bStart) >= -1 then
+    exit(ToString(aStart, bEnd));
+
+  a := self.Slice(aStart, aEnd);
+  b := self.Slice(bStart, bEnd);
+
+  Result := '[' + a.Join(', ') + ' ... ' + b.Join(', ') + ']';
+end;
+
+function TIntegerHelperDynArray.ToString: string;
+begin
+  Result := '[' + join(', ').Trim + ']';
+end;
+
+function TIntegerHelperDynArray.ToString(aStart, aEnd: Integer): string;
+begin
+  result := Self.Slice(aStart, aEnd).ToString;
 end;
 
 function TIntegerHelperDynArray.Union(const Values: TIntegerDynArray): TIntegerDynArray;

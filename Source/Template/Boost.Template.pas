@@ -95,6 +95,10 @@ type
     function First: <TYPE>;
     function Last: <TYPE>;
     function Has(const value: <TYPE>): Boolean;
+    function ToString(): string; overload;
+    function ToString(aCount: Integer): string; overload;
+    function ToString(aStart, aEnd: Integer): string; overload;
+    function ToString(aStart, aEnd, bStart, bEnd: Integer): string; overload;
   end;
 
 implementation
@@ -548,6 +552,46 @@ end;
 procedure T<TYPE>HelperDynArray.Sort(const Comparison: TComparison<<TYPE>>);
 begin
   TArray.Sort<<TYPE>>(self, TComparer<<TYPE>>.Construct(Comparison));
+end;
+
+function T<TYPE>HelperDynArray.ToString(aCount: Integer): string;
+var
+  l: Integer;
+begin
+  if aCount <= 0 then
+    exit('');
+
+  l := aCount;
+
+  Result := ToString(0, l - 1, -l, -1);
+end;
+
+function T<TYPE>HelperDynArray.ToString(aStart, aEnd, bStart, bEnd: Integer): string;
+var
+  a, b: T<TYPE>DynArray;
+begin
+  aStart := TArray.SurroundIndex<<TYPE>>(aStart, self);
+  aEnd := TArray.SurroundIndex<<TYPE>>(aEnd, self);
+  bStart := TArray.SurroundIndex<<TYPE>>(bStart, self);
+  bEnd := TArray.SurroundIndex<<TYPE>>(bEnd, self);
+
+  if (aEnd - bStart) >= -1 then
+    exit(ToString(aStart, bEnd));
+
+  a := self.Slice(aStart, aEnd);
+  b := self.Slice(bStart, bEnd);
+
+  Result := '[' + a.Join(', ') + ' ... ' + b.Join(', ') + ']';
+end;
+
+function T<TYPE>HelperDynArray.ToString: string;
+begin
+  Result := '[' + join(', ').Trim + ']';
+end;
+
+function T<TYPE>HelperDynArray.ToString(aStart, aEnd: Integer): string;
+begin
+  result := Self.Slice(aStart, aEnd).ToString;
 end;
 
 End.
