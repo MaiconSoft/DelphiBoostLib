@@ -77,9 +77,11 @@ type
     function First: string;
     function Last: string;
     function Has(const value: string): Boolean;
+    function Quoted(Quote: string; Skip: string): TStringDynArray; overload;
+    function Quoted(Quote: Char): TStringDynArray; overload;
+    function Quoted(): TStringDynArray; overload;
   end;
 
- 
 implementation
 
 uses
@@ -134,6 +136,38 @@ begin
   Result := TArray.PushFront<string>(self, '');
 end;
 
+function TStringHelperDynArray.Quoted: TStringDynArray;
+var
+  Item: string;
+begin
+  Result.Clear;
+  for Item in Self do
+    Result.add(Item.QuotedString);
+end;
+
+function TStringHelperDynArray.Quoted(Quote: Char): TStringDynArray;
+var
+  Item: string;
+  _Quote: char;
+begin
+  _Quote := Quote;
+  Result.Clear;
+  for Item in Self do
+    Result.add(Item.QuotedString(_Quote));
+end;
+
+function TStringHelperDynArray.Quoted(Quote: string; Skip: string): TStringDynArray;
+var
+  Item, ItemSkiped: string;
+begin
+  Result.Clear;
+  for Item in Self do
+  begin
+    ItemSkiped := Item.Replace(Quote, Skip + Quote, [rfReplaceAll]);
+    Result.add(Quote + ItemSkiped + Quote);
+  end;
+end;
+
 procedure TStringHelperDynArray.Sort;
 begin
   TArray.Sort<string>(self);
@@ -153,7 +187,6 @@ begin
     for i := 0 to High(Values) do
       add(Values[i]);
 end;
-
 
 procedure TStringHelperDynArray.Assign(const Values: string; Separator: array of char);
 begin
@@ -449,7 +482,7 @@ begin
           self[I] := IntToStr(VInteger);
         vtBoolean:
           self[I] := BoolToStr(VBoolean, true);
-        vtChar,vtWideChar:
+        vtChar, vtWideChar:
           self[I] := VChar;
         vtExtended:
           self[I] := FloatToStr(VExtended^);
@@ -486,3 +519,4 @@ begin
 end;
 
 end.
+

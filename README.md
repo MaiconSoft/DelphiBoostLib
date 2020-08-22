@@ -2095,7 +2095,7 @@ procedure Main;
 var 
 	data: TStringDynArray;
 begin
-	data  = ['apple','orange','banana';
+	data  = ['apple','orange','banana'];
 	
 	If (data.Has('orange')) then
 		ShowMessage("This array has orange");
@@ -2110,5 +2110,100 @@ begin
 	// Expected: "This array hasn't strawberry"
 end;
 ```
+<hr width=”100%”>
 
+```pascal
+function Quoted(): TStringDynArray;
+ ```
+Return a array with all elements quoted using char 47 ('). This char is skiped in element using another.
+
+*Params:*
+>  - None
+
+*Return:*
+>  - Result(TStringDynArray): Return array with all elements quoted.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+	w:string;
+begin
+	data  = ['apple','orange','it''not a frut'];
+	forin w in data.Quoted() do	
+		ShowMessage(w);
+	// Expected: "'apple'"
+	// Expected: "'orange'"
+	// Expected: "'it''not a frut'"
+
+	ShowMessage(data.Quoted());
+	// Expected: "'apple','orange','it''not a frut'"
+end;
+```
+<hr width=”100%”>
+
+```pascal
+function Quoted(Quote: Char): TStringDynArray;
+ ```
+Return a array with all elements quoted using 'Quote' char. This char is skiped in element using another.
+
+*Params:*
+>  - None
+
+*Return:*
+>  - Result(TStringDynArray): Return array with all elements quoted.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+	w:string;
+begin
+	data  = ['apple','orange','|none|'];
+	forin w in data.Quoted('|') do	
+		ShowMessage(w);
+	// Expected: "|apple|"
+	// Expected: "|orange|"
+	// Expected: "||none||"
+
+	ShowMessage(data.Quoted());
+	// Expected: "|apple|,|orange|,||none||"
+end;
+```
+<hr width=”100%”>
+
+```pascal
+function Quoted(Quote: string; Skip: string): TStringDynArray;
+ ```
+Return a array with all elements quoted using 'Quote' string. This string is skiped in element using 'Skip' string before.
+
+*Params:*
+>  - None
+
+*Return:*
+>  - Result(TStringDynArray): Return array with all elements quoted.
+
+*Exemple:*
+
+``` pascal
+procedure Main;
+var 
+	data: TStringDynArray;
+	w:string;
+begin
+	data  = ['apple','orange','"none"'];
+	forin w in data.Quoted('"','\') do	
+		ShowMessage(w);
+	// Expected: "apple"
+	// Expected: "orange"
+	// Expected: "\"none\""
+
+	ShowMessage(data.Quoted());
+	// Expected: "apple","orange","\"none\""
+end;
+```
 <hr width=”100%”>
