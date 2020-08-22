@@ -2138,7 +2138,7 @@ begin
 	// Expected: "'orange'"
 	// Expected: "'it''not a frut'"
 
-	ShowMessage(data.Quoted());
+	ShowMessage(data.Quoted().comma);
 	// Expected: "'apple','orange','it''not a frut'"
 end;
 ```
@@ -2170,7 +2170,7 @@ begin
 	// Expected: "|orange|"
 	// Expected: "||none||"
 
-	ShowMessage(data.Quoted());
+	ShowMessage(data.Quoted().comma);
 	// Expected: "|apple|,|orange|,||none||"
 end;
 ```
@@ -2202,7 +2202,7 @@ begin
 	// Expected: "orange"
 	// Expected: "\"none\""
 
-	ShowMessage(data.Quoted());
+	ShowMessage(data.Quoted().comma);
 	// Expected: "apple","orange","\"none\""
 end;
 ```
