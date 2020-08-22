@@ -449,7 +449,7 @@ begin
           self[I] := IntToStr(VInteger);
         vtBoolean:
           self[I] := BoolToStr(VBoolean, true);
-        vtChar:
+        vtChar,vtWideChar:
           self[I] := VChar;
         vtExtended:
           self[I] := FloatToStr(VExtended^);
