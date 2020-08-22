@@ -2132,7 +2132,7 @@ var
 	w:string;
 begin
 	data  = ['apple','orange','it''not a frut'];
-	forin w in data.Quoted() do	
+	for w in data.Quoted() do	
 		ShowMessage(w);
 	// Expected: "'apple'"
 	// Expected: "'orange'"
@@ -2164,7 +2164,7 @@ var
 	w:string;
 begin
 	data  = ['apple','orange','|none|'];
-	forin w in data.Quoted('|') do	
+	for w in data.Quoted('|') do	
 		ShowMessage(w);
 	// Expected: "|apple|"
 	// Expected: "|orange|"
@@ -2196,7 +2196,7 @@ var
 	w:string;
 begin
 	data  = ['apple','orange','"none"'];
-	forin w in data.Quoted('"','\') do	
+	for w in data.Quoted('"','\') do	
 		ShowMessage(w);
 	// Expected: "apple"
 	// Expected: "orange"
