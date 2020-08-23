@@ -2150,7 +2150,7 @@ function Quoted(Quote: Char): TStringDynArray;
 Return a array with all elements quoted using 'Quote' char. This char is skiped in element using another.
 
 *Params:*
->  - None
+>  - Quote(Char): char to insert surround every word (element) of array;
 
 *Return:*
 >  - Result(TStringDynArray): Return array with all elements quoted.
@@ -2182,7 +2182,8 @@ function Quoted(Quote: string; Skip: string): TStringDynArray;
 Return a array with all elements quoted using 'Quote' string. This string is skiped in element using 'Skip' string before.
 
 *Params:*
->  - None
+>  - Quote(String): string to insert surround every word (element) of array;
+> - Skip(String): In case 'Quote' string is inside the element, the this string is add before the 'Quote' word.
 
 *Return:*
 >  - Result(TStringDynArray): Return array with all elements quoted.
