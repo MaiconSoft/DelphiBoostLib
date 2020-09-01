@@ -2129,7 +2129,7 @@ Return a array with all elements quoted using char 47 ('). This char is skiped i
 procedure Main;
 var 
 	data: TStringDynArray;
-	w:string;
+	w: string;
 begin
 	data  = ['apple','orange','it''not a frut'];
 	for w in data.Quoted() do	
@@ -2161,7 +2161,7 @@ Return a array with all elements quoted using 'Quote' char. This char is skiped 
 procedure Main;
 var 
 	data: TStringDynArray;
-	w:string;
+	w: string;
 begin
 	data  = ['apple','orange','|none|'];
 	for w in data.Quoted('|') do	
@@ -2194,7 +2194,7 @@ Return a array with all elements quoted using 'Quote' string. This string is ski
 procedure Main;
 var 
 	data: TStringDynArray;
-	w:string;
+	w: string;
 begin
 	data  = ['apple','orange','"none"'];
 	for w in data.Quoted('"','\') do	
