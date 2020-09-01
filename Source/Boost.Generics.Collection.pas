@@ -69,11 +69,31 @@ Type
     property Capacity: Integer read FCapacity write FCapacity;
   end;
 
+  TRange = record
+  private
+    Fincrement: Integer;
+    FIndex: Integer;
+    FStart, FStop, FValue: Integer;
+    function GetCurrent: Integer; inline;
+  public
+    constructor Create(start, stop, Increment: Integer);
+    function MoveNext: Boolean; inline;
+    function GetEnumerator: TRange;
+    property Current: Integer read GetCurrent;
+  end;
+
+  function Range(start, stop: Integer; Increment: Integer=1):TRange;
 
 implementation
 
 uses
   System.SysUtils;
+
+
+function Range(start, stop: Integer; Increment: Integer=1):TRange;
+begin
+ Result:= TRange.Create(start, stop,Increment);
+end;
 
 { TQueue }
 
@@ -273,4 +293,36 @@ begin
   Result := FIndex < length(FList);
 end;
 
+
+{TRange }
+
+constructor TRange.Create(start, stop, Increment: Integer);
+begin
+  FStart := start;
+  FStop := stop;
+  Fincrement := Increment;
+  FValue := start - Increment;
+end;
+
+function TRange.GetCurrent: Integer;
+begin
+  Result := FValue;
+end;
+
+function TRange.GetEnumerator: TRange;
+begin
+  Result := self;
+end;
+
+function TRange.MoveNext: Boolean;
+begin
+  FValue := FValue + Fincrement;
+  if (Fincrement > 0) and (FValue > FStop) then
+    exit(False);
+
+  if (Fincrement < 0) and (FValue < FStop) then
+    exit(False);
+
+  Result := True;
+end;
 end.
