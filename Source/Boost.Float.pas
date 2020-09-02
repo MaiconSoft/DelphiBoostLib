@@ -92,6 +92,13 @@ type
     function First: Double;
     function Last: Double;
     function Has(const value: Double): Boolean;
+    function Reduce(funcInteration: TFunc<Double, Double, Double>): Double; overload;
+    function Reduce(funcInteration: TFunc<Double, Double, Integer, Double>):
+      Double; overload;
+    class function Range(start: Double; aLength: Integer; increment: Double =
+      1.0): TDoubleDynArray; overload; static;
+    class function Range(aLength: Integer): TDoubleDynArray; overload; static;
+    class function Empty: TDoubleDynArray; static;
 //    function Max:Double;
 //    function Min:Double;
 //    function Mean:Double;
@@ -286,6 +293,11 @@ begin
   TArray.Diference<Double>(self, Values, Result);
 end;
 
+class function TDoubleHelperDynArray.Empty: TDoubleDynArray;
+begin
+  Result := [];
+end;
+
 function TDoubleHelperDynArray.Every(func: TFunc<Double, Integer, Boolean>): Boolean;
 begin
   Result := TArray.Every<Double>(func, self);
@@ -411,6 +423,40 @@ end;
 procedure TDoubleHelperDynArray.Remove(Item: Double);
 begin
   TArray.Remove<Double>(Item, 1, self);
+end;
+
+class function TDoubleHelperDynArray.Range(aLength: Integer): TDoubleDynArray;
+begin
+  Result := range(0.0, aLength);
+end;
+
+class function TDoubleHelperDynArray.Range(start: Double; aLength: Integer;
+  increment: Double): TDoubleDynArray;
+var
+  i: Integer;
+  val: Double;
+begin
+  if aLength = 0 then
+    exit(Empty);
+
+  val := start;
+  for i := 1 to aLength do
+  begin
+    Result.Add(val);
+    val := val + increment;
+  end;
+end;
+
+function TDoubleHelperDynArray.Reduce(funcInteration: TFunc<Double, Double,
+  Integer, Double>): Double;
+begin
+  Result := TArray.Reduce<Double, Double>(self, funcInteration, DEFAULT_VALUE);
+end;
+
+function TDoubleHelperDynArray.Reduce(funcInteration: TFunc<Double, Double,
+  Double>): Double;
+begin
+  Result := TArray.Reduce<Double, Double>(self, funcInteration, DEFAULT_VALUE);
 end;
 
 procedure TDoubleHelperDynArray.Remove(Item: Double; count: Integer);

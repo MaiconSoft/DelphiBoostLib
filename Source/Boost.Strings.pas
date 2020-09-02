@@ -80,6 +80,9 @@ type
     function Quoted(Quote: string; Skip: string): TStringDynArray; overload;
     function Quoted(Quote: Char): TStringDynArray; overload;
     function Quoted(): TStringDynArray; overload;
+    function Reduce(funcInteration: TFunc<string, string, string>): string; overload;
+    function Reduce(funcInteration: TFunc<string, string, Integer, string>):
+      string; overload;
   end;
 
 implementation
@@ -346,6 +349,18 @@ end;
 procedure TStringHelperDynArray.Remove(Item: string);
 begin
   TArray.Remove<string>(Item, 1, self);
+end;
+
+function TStringHelperDynArray.Reduce(funcInteration: TFunc<string, string,
+  Integer, string>): string;
+begin
+  Result := TArray.Reduce<string, string>(self, funcInteration, '');
+end;
+
+function TStringHelperDynArray.Reduce(funcInteration: TFunc<string, string,
+  string>): string;
+begin
+  Result := TArray.Reduce<string, string>(self, funcInteration, '');
 end;
 
 procedure TStringHelperDynArray.Remove(Item: string; count: integer);

@@ -75,6 +75,16 @@ type
     class function RemoveDuplicate<T>(var a: TArray<T>): Integer; static;
     class function PushBack<T>(var a: TArray<T>; const Default: T): T; static;
     class function PushFront<T>(var a: TArray<T>; const Default: T): T; static;
+    class function Reduce<T, TAcum, TResult>(var a: TArray<T>; FuncIteration:
+      TFunc<TAcum, T, TAcum>; FuncReturn: TFunc<TAcum, TResult>; Acum: TAcum):
+      TResult; overload; static;
+    class function Reduce<T, TAcum, TResult>(var a: TArray<T>; FuncIteration:
+      TFunc<TAcum, T, Integer, TAcum>; FuncReturn: TFunc<TAcum, TResult>; Acum:
+      TAcum): TResult; overload; static;
+    class function Reduce<T, TResult>(var a: TArray<T>; FuncIteration: TFunc<
+      TResult, T, TResult>; Acum: TResult): TResult; overload; static;
+    class function Reduce<T, TResult>(var a: TArray<T>; FuncIteration: TFunc<
+      TResult, T, Integer, TResult>; Acum: TResult): TResult; overload; static;
   end;
 
 implementation
@@ -642,6 +652,69 @@ begin
     TArray.Delete<T>(index, 1, Values);
     dec(count);
   until (count = 0);
+end;
+
+class function TArray.Reduce<T, TAcum, TResult>(var a: TArray<T>; FuncIteration:
+  TFunc<TAcum, T, TAcum>; FuncReturn: TFunc<TAcum, TResult>; Acum: TAcum): TResult;
+var
+  aAcum: TAcum;
+  i: Integer;
+begin
+  aAcum := Acum;
+  if Assigned(FuncIteration) then
+    for i := 0 to High(a) do
+      aAcum := FuncIteration(aAcum, a[i]);
+
+  if Assigned(FuncReturn) then
+    Result := FuncReturn(aAcum)
+  else
+    raise EArgumentNilException.Create('FuncReturn must be assigned');
+end;
+
+class function TArray.Reduce<T, TAcum, TResult>(var a: TArray<T>; FuncIteration:
+  TFunc<TAcum, T, Integer, TAcum>; FuncReturn: TFunc<TAcum, TResult>; Acum:
+  TAcum): TResult;
+var
+  aAcum: TAcum;
+  i: Integer;
+begin
+  aAcum := Acum;
+  if Assigned(FuncIteration) then
+    for i := 0 to High(a) do
+      aAcum := FuncIteration(aAcum, a[i], i);
+
+  if Assigned(FuncReturn) then
+    Result := FuncReturn(aAcum)
+  else
+    raise EArgumentNilException.Create('FuncReturn must be assigned');
+end;
+
+class function TArray.Reduce<T, TResult>(var a: TArray<T>; FuncIteration: TFunc<
+  TResult, T, Integer, TResult>; Acum: TResult): TResult;
+var
+  aAcum: TResult;
+  i: Integer;
+begin
+  aAcum := Acum;
+  if Assigned(FuncIteration) then
+    for i := 0 to High(a) do
+      aAcum := FuncIteration(aAcum, a[i], i);
+
+  Result := aAcum;
+end;
+
+class function TArray.Reduce<T, TResult>(var a: TArray<T>; FuncIteration: TFunc<
+  TResult, T, TResult>; Acum: TResult): TResult;
+var
+  aAcum: TResult;
+  i: Integer;
+begin
+  aAcum := Acum;
+  if Assigned(FuncIteration) then
+    for i := 0 to High(a) do
+      aAcum := FuncIteration(aAcum, a[i]);
+
+  Result := aAcum;
 end;
 
 class procedure TArray.Remove<T>(Func: TFunc<T, Integer, Boolean>; var Values: TArray<T>);

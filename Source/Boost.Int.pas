@@ -112,6 +112,13 @@ type
     function ToString(aStart, aEnd, bStart, bEnd: Integer): string; overload;
     class function Random(Size, MinInclusive, MaxInclusive: Integer):
       TIntegerDynArray; static;
+    function Reduce(funcInteration: TFunc<Integer, Integer, Integer>): Integer; overload;
+    function Reduce(funcInteration: TFunc<Integer, Integer, Integer, Integer>):
+      Integer; overload;
+    class function Range(start, aLength: Integer; increment: Integer = 1):
+      TIntegerDynArray; overload; static;
+    class function Range(aLength: Integer): TIntegerDynArray; overload; static;
+    class function Empty: TIntegerDynArray; static;
   end;
 
 implementation
@@ -374,6 +381,11 @@ begin
   TArray.Diference<Integer>(self, Values, Result);
 end;
 
+class function TIntegerHelperDynArray.Empty: TIntegerDynArray;
+begin
+  Result := [];
+end;
+
 function TIntegerHelperDynArray.Every(func: TFunc<Integer, Integer, Boolean>): Boolean;
 begin
   Result := TArray.Every<Integer>(func, self);
@@ -518,6 +530,39 @@ begin
   Randomize;
   for i := 0 to High(result) do
     Result[i] := RandomRange(MinInclusive, MaxInclusive);
+end;
+
+class function TIntegerHelperDynArray.Range(aLength: Integer): TIntegerDynArray;
+begin
+  Result := range(0, aLength);
+end;
+
+class function TIntegerHelperDynArray.Range(start, aLength, increment: Integer):
+  TIntegerDynArray;
+var
+  i, val: Integer;
+begin
+  if aLength = 0 then
+    exit(Empty);
+
+  val := start;
+  for i := 1 to aLength do
+  begin
+    Result.Add(val);
+    val := val + increment;
+  end;
+end;
+
+function TIntegerHelperDynArray.Reduce(funcInteration: TFunc<Integer, Integer,
+  Integer>): Integer;
+begin
+  Result := TArray.Reduce<Integer, Integer>(self, funcInteration, DEFAULT_VALUE);
+end;
+
+function TIntegerHelperDynArray.Reduce(funcInteration: TFunc<Integer, Integer,
+  Integer, Integer>): Integer;
+begin
+  Result := TArray.Reduce<Integer, Integer>(self, funcInteration, DEFAULT_VALUE);
 end;
 
 function TIntegerHelperDynArray.Remove(func: TFunc<Integer, Integer, Boolean>):

@@ -32,6 +32,7 @@ type
 	class function InternalFloatTo<TYPE>(value:Extended):<TYPE>;
 	class function InternalIntegerTo<TYPE>(value:Integer):<TYPE>;
   public
+	class function Empty:TIntegerDynArray; static;  
     property Items[Index: Integer]: <TYPE> read GetItem write SetItem;
     property Count: Integer read GetCount write SetCount;
     function Join(const Separator: string): string;
@@ -99,6 +100,9 @@ type
     function ToString(aCount: Integer): string; overload;
     function ToString(aStart, aEnd: Integer): string; overload;
     function ToString(aStart, aEnd, bStart, bEnd: Integer): string; overload;
+    function Reduce(funcInteration: TFunc<<TYPE>, <TYPE>, <TYPE>>): <TYPE>; overload;
+    function Reduce(funcInteration: TFunc<<TYPE>, <TYPE>, Integer, <TYPE>>):
+      <TYPE>; overload;
   end;
 
 implementation
@@ -592,6 +596,23 @@ end;
 function T<TYPE>HelperDynArray.ToString(aStart, aEnd: Integer): string;
 begin
   result := Self.Slice(aStart, aEnd).ToString;
+end;
+
+function T<TYPE>HelperDynArray.Reduce(funcInteration: TFunc<<TYPE>, <TYPE>,
+  Integer, <TYPE>>): <TYPE>;
+begin
+  Result := TArray.Reduce<<TYPE>, <TYPE>>(self, funcInteration, DEFAULT_VALUE);
+end;
+
+function T<TYPE>HelperDynArray.Reduce(funcInteration: TFunc<<TYPE>, <TYPE>,
+  <TYPE>>): <TYPE>;
+begin
+  Result := TArray.Reduce<<TYPE>, <TYPE>>(self, funcInteration, DEFAULT_VALUE);
+end;
+
+class function T<TYPE>HelperDynArray.Empty: TIntegerDynArray;
+begin
+ Result:= [];
 end;
 
 End.
