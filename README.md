@@ -17,7 +17,7 @@ Library to boost delphi objects using helpers.
 
 > Bellow zero values will be converted in reverse order:
 
-> Exemples: [a, b, c, d]:
+> Examples: [a, b, c, d]:
 
 > - Index(0) = a
 > - Index(3) = d
@@ -42,7 +42,7 @@ Library to boost delphi objects using helpers.
 *Return:*
 >  - Result(string) = Joined elements.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -76,7 +76,7 @@ end;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -105,7 +105,7 @@ end;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -152,7 +152,7 @@ end;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -182,7 +182,7 @@ end;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -195,7 +195,7 @@ begin
 
 	ShowMessage(data.join());
 	// Expected: random order every time
-	// Exemple: "banana orange apple"
+	// Example: "banana orange apple"
 end;
 ```
 
@@ -213,7 +213,7 @@ end;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -246,7 +246,7 @@ end;
 >  	- If item is found: return index of value in array (zero based);
 >  	- Else: return -1.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -337,7 +337,7 @@ end;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -381,7 +381,7 @@ procedure Delete(Index, Count: Integer); overload;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -425,7 +425,7 @@ procedure Insert(Index: Integer; Value: string); overload;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -464,7 +464,7 @@ procedure Insert(Index: Integer; Values: TStringDynArray); overload;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -502,7 +502,7 @@ procedure Add(Value: string); overload;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -531,7 +531,7 @@ procedure Add(Values: TStringDynArray); overload;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -560,7 +560,7 @@ function CountItems(Item: string): Integer;
 *Return:*
 >  - Result(Integer): Number of Itens found (0 if not found).
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -598,7 +598,7 @@ procedure Remove(Item: string); overload;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -639,7 +639,7 @@ procedure Remove(Item: string; count: integer); overload;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -679,7 +679,7 @@ procedure Clear();
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -711,7 +711,7 @@ function Slice(StartPos, EndPos: integer): TStringDynArray; overload;
 *Return:*
 >  - Result(TStringDynArray): Array extracted;
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -748,7 +748,7 @@ function Slice(StartPos: integer): TStringDynArray; overload;
 *Return:*
 >  - Result(TStringDynArray): Array extracted;
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -785,7 +785,7 @@ function Head(EndPos: integer): TStringDynArray;
 *Return:*
 >  - Result(TStringDynArray): Array extracted;
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -822,7 +822,7 @@ function Tail(StartPos: integer): TStringDynArray;
 *Return:*
 >  - Result(TStringDynArray): Array extracted;
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -859,7 +859,7 @@ function Save(FileName: string): boolean;
 *Return:*
 >  - Result(Boolean): Return **TRUE** if sucessfull save.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -886,7 +886,7 @@ function Load(FileName: string): boolean;
 *Return:*
 >  - Result(Boolean): Return **TRUE** if sucessfull load. Return **FALSE** if file not exist ou can't be load.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -920,7 +920,7 @@ function Clone: TStringDynArray;
 *Return:*
 >  - Result(TStringDynArray): Copy of array.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -949,7 +949,7 @@ procedure Assign(const Values: TStringDynArray); overload;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -978,7 +978,7 @@ procedure Assign(const Values: string; Separator: array of char); overload;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1010,7 +1010,7 @@ procedure Assign(const Values: string; Separator: TStringDynArray); overload;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1043,7 +1043,7 @@ procedure Fill(const Value: string; const StartIndex: integer = 0; const
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1086,7 +1086,7 @@ property Comma: string read GetAsComa write SetAsComma;
 *GET(string):*
 >  - Return a strings separed by comma using elements array
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1117,7 +1117,7 @@ property Items[Index: Integer]: string read GetItem write SetItem;
 *GET(string):*
 >  - Return a string stored in array at position Index;
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1154,7 +1154,7 @@ property Count: Integer read GetCount write SetCount;
 *GET(Integer):*
 >  - Return a length of array;
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1192,7 +1192,7 @@ procedure ForEach(proc: TProcVar<Integer, string>); overload;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1225,7 +1225,7 @@ procedure ForEach(proc: TProcVar<string>); overload;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1259,7 +1259,7 @@ procedure ForEach(proc: TProc<Integer, string>); overload;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1293,7 +1293,7 @@ procedure ForEach(proc: TProc<string>); overload;
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1326,7 +1326,7 @@ procedure _Of(const Args: array of const);
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1357,7 +1357,7 @@ function Every(func: TFunc<string, Boolean>): Boolean; overload;
 *Return:*
 >  - Result(Boolean): Return **TRUE** if all elements in array pass in test. Otherwise return **FALSE**.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1401,7 +1401,7 @@ function Every(func: TFunc<string, Integer, Boolean>): Boolean; overload;
 *Return:*
 >  - Result(Boolean): Return **TRUE** if all elements in array pass in test. Otherwise return **FALSE**.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1447,7 +1447,7 @@ function Filter(func: TFunc<string, Boolean>): TStringDynArray; overload;
 *Return:*
 >  - Result(TStringDynArray): Return a new array. If none elements pass in test or 'func' is not assigned, will return a empty array.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1484,7 +1484,7 @@ function Filter(func: TFunc<string, Integer, Boolean>): TStringDynArray; overloa
 *Return:*
 >  - Result(TStringDynArray): Return a new array. If none elements pass in test or 'func' is not assigned, will return a empty array.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1520,7 +1520,7 @@ function Find(func: TFunc<string, Integer, Boolean>): string; overload;
 *Return:*
 >  - Result(string): Return the vector element that pass the test. If none elements pass in test or 'func' is not assigned, will return a empty string.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1564,7 +1564,7 @@ function Find(func: TFunc<string,  Boolean>): string; overload;
 *Return:*
 >  - Result(string): Return the vector element that pass the test. If none elements pass in test or 'func' is not assigned, will return a empty string.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1603,7 +1603,7 @@ procedure Shift(aCount: Integer = 1);
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1646,7 +1646,7 @@ procedure Unshift(aCount: Integer = 1);
 *Return:*
 >  - None
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1689,7 +1689,7 @@ Create a array with a 'self' and append the elements of 'Values' that not presen
 *Return:*
 >  - Result(TStringDynArray): new array with a union of elements.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1719,7 +1719,7 @@ Create a array with a 'self' and remove the elements common with 'Values'.
 *Return:*
 >  - Result(TStringDynArray): new array with a union of elements.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1749,7 +1749,7 @@ Create a array with a 'self' and remove the elements **NOT** common with 'Values
 *Return:*
 >  - Result(TStringDynArray): new array with a union of elements.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1779,7 +1779,7 @@ Create a array with a 'self', append all elements of 'Values', then remove the e
 *Return:*
 >  - Result(TStringDynArray): new array with a union of elements.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1809,7 +1809,7 @@ Compare a 'self' array with a 'Values' array.
 *Return:*
 >  - Result(Boolean): Return **TRUE** if all elements in same position has the same value. Otherwise return **FALSE**.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1850,7 +1850,7 @@ Compare a 'self' array with a 'Values' array.
 *Return:*
 >  - Result(Boolean): Return **TRUE** if all elements in any position has the same value. Otherwise return **FALSE**.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1890,7 +1890,7 @@ Scan and remove all duplicate items.
 *Return:*
 >  - Result(Integer): Return a number of duplicates removed.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1921,7 +1921,7 @@ For all Items remove white spaces in torn of item, and if it has only spaces or 
 *Return:*
 >  - Result(Integer): Return a number of duplicates removed.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1951,7 +1951,7 @@ Return the value of fist element in array or empty string if not have one.
 *Return:*
 >  - Result(string): Return the fist element.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -1983,7 +1983,7 @@ Return the value of last element in array or empty string if not have one.
 *Return:*
 >  - Result(string): Return the last element.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -2015,7 +2015,7 @@ Return the value of first element in array, then remove it from array. if not ha
 *Return:*
 >  - Result(string): Return the first element.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -2052,7 +2052,7 @@ Return the value of last element in array, then remove it from array. if not hav
 *Return:*
 >  - Result(string): Return the last element.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -2088,7 +2088,7 @@ Return **TRUE** if array has one ou more items with value 'value'.
 *Return:*
 >  - Result(Boolean): Return **TRUE** if has 'value', otherwise return **FALSE**.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -2123,7 +2123,7 @@ Return a array with all elements quoted using char 47 ('). This char is skiped i
 *Return:*
 >  - Result(TStringDynArray): Return array with all elements quoted.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -2155,7 +2155,7 @@ Return a array with all elements quoted using 'Quote' char. This char is skiped 
 *Return:*
 >  - Result(TStringDynArray): Return array with all elements quoted.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
@@ -2188,7 +2188,7 @@ Return a array with all elements quoted using 'Quote' string. This string is ski
 *Return:*
 >  - Result(TStringDynArray): Return array with all elements quoted.
 
-*Exemple:*
+*Example:*
 
 ``` pascal
 procedure Main;
