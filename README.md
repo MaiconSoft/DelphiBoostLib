@@ -13,7 +13,7 @@ Helper for TDoubleDynArray.
 Helper for TIntegerDynArray. 
 ### [Boost.Strings](Documentation/Boost.Strings.md)
 Helper for TStringDynArray.
-### Boost.Rational;
+### [Boost.Rational](Documentation/Boost.Rational.md);
  - TFraction: Record for easy manager rational numbers.
 ### Boost.Generics.Collection;
  - TQueue<T>: Generic record for create a queue compatible com System.Generics.Collections;
