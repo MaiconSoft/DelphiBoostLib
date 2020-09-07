@@ -11,7 +11,7 @@ Helper for TArray, implements many useful tools for working with dynamic arrays.
 Helper for TDoubleDynArray. 
 ### Boost.Int
 Helper for TIntegerDynArray. 
-### [Boost.Strings](.\Documentation\Boost.Strings.md)
+### [Boost.Strings](\Documentation\Boost.Strings.md)
 Helper for TStringDynArray.
 ### Boost.Rational;
  - TFraction: Record for easy manager rational numbers.
