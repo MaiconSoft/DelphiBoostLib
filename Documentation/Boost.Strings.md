@@ -2,7 +2,7 @@
 # ``TArray <string>`` 
 **Aka:** Array of string, TStringDynArray
 
-## Functions
+## Methods
 
 ### Notes:
 <div id="SURROUND_INDEX"/>

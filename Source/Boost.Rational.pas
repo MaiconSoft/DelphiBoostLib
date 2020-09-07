@@ -16,13 +16,13 @@ type
     class function DecimalToFraction(value: Double; MaximumDenominator: Int64):
       TFraction; static;
     class function Parse(value: string): TFraction; static;
+    function Reciprocal: TFraction; inline;
   public
     constructor Create(aNum, aDenom: Int64); overload;
     constructor Create(aNum: Int64); overload;
     constructor Create(a: TFraction); overload;
     constructor Create(a: string); overload;
     function Abs: TFraction;
-    function Reciprocal: TFraction; inline;
     function ToString: string; inline;
     class operator Add(a, b: TFraction): TFraction;
     class operator Subtract(a, b: TFraction): TFraction;
