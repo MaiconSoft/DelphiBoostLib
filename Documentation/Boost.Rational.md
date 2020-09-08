@@ -133,6 +133,7 @@ procedure Main;
 var
   a, b, c, d: TFraction;
   stringValue: string;
+  intValue: Integer;
 begin
   a := fraction(1, 2) + 2;   // expected:  5/2
   a := -0.5;                 // expected: -1/2
@@ -164,7 +165,21 @@ end;
 ``` 
 
 ## Properties	
-> property Numerator: Int64 read FNum;
-> property Denominator: Int64 read FDenom;
+TFraction support acess Numerator and Denominator using the readonly properties:
 
+> - property Numerator: Int64 read FNum;
+
+> - property Denominator: Int64 read FDenom;
+*Example:*
+
+``` pascal
+procedure Main;
+var
+  a: TFraction;
+begin
+	a := Fraction(3,5);
+	writeln(a.Numerator); 			// expected: 3
+	writeln(a.Denominator);			// expected: 5
+end;
+``` 
  <hr width=”100%”>
