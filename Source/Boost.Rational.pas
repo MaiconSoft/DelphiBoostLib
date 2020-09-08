@@ -16,13 +16,13 @@ type
     class function DecimalToFraction(value: Double; MaximumDenominator: Int64):
       TFraction; static;
     class function Parse(value: string): TFraction; static;
-    function Reciprocal: TFraction; inline;
   public
     constructor Create(aNum, aDenom: Int64); overload;
     constructor Create(aNum: Int64); overload;
     constructor Create(a: TFraction); overload;
     constructor Create(a: string); overload;
     function Abs: TFraction;
+    function Reciprocal: TFraction; inline;
     function ToString: string; inline;
     class operator Add(a, b: TFraction): TFraction;
     class operator Subtract(a, b: TFraction): TFraction;
@@ -50,6 +50,14 @@ type
     property Denominator: Int64 read FDenom;
   end;
 
+function Fraction(num, denom: Int64): TFraction; overload;
+
+function Fraction(num: Int64): TFraction; overload;
+
+function Fraction(value: Double): TFraction; overload;
+
+function Fraction(value: string): TFraction; overload;
+
 var
   MaximumDenominator: Int64 = 65536;
 
@@ -60,6 +68,26 @@ begin
   Result := Trunc(X);
   if Frac(X) < 0 then
     Dec(Result);
+end;
+
+function Fraction(num, denom: Int64): TFraction; overload;
+begin
+  Result := TFraction.Create(num, denom);
+end;
+
+function Fraction(num: Int64): TFraction; overload;
+begin
+  Result := TFraction.Create(num);
+end;
+
+function Fraction(value: Double): TFraction; overload;
+begin
+  Result := TFraction.Create(value);
+end;
+
+function Fraction(value: string): TFraction; overload;
+begin
+  Result := TFraction.Create(value);
 end;
 
 { TFraction }

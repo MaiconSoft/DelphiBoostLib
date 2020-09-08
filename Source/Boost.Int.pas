@@ -130,8 +130,18 @@ uses
 
 class function TIntegerHelperDynArray.InternalStrToInteger(value: string;
   Default: Integer): Integer;
+var
+  f: Extended;
 begin
-  Result := StrToIntDef(value, Default);
+  if TryStrToInt(value, Result) then
+    exit;
+
+  value := value.Replace(',', FormatSettings.DecimalSeparator);
+  value := value.Replace('.', FormatSettings.DecimalSeparator);
+
+  if TryStrToFloat(value, f) then
+    exit(InternalFloatToInteger(f));
+  Result := Default;
 end;
 
 class function TIntegerHelperDynArray.InternalIntegerToStr(value: Integer): string;
@@ -239,6 +249,7 @@ end;
 
 function TIntegerHelperDynArray.Min: Integer;
 begin
+  Result := 0;
   Select(
     function(Item, Last: Integer): Integer
     begin
@@ -724,6 +735,7 @@ end;
 
 function TIntegerHelperDynArray.Sum: Integer;
 begin
+  Result := 0;
   Accum(
     function(Item: Integer): Integer
     begin
