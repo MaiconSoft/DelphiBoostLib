@@ -24,6 +24,8 @@ type
     function Abs: TFraction;
     function Reciprocal: TFraction; inline;
     function ToString: string; inline;
+    function ToInteger: Integer; inline;
+    function ToDouble: Double; inline;
     class operator Add(a, b: TFraction): TFraction;
     class operator Subtract(a, b: TFraction): TFraction;
     class operator Multiply(a, b: TFraction): TFraction;
@@ -105,6 +107,7 @@ begin
   m := Lcm(a.Denominator, b.Denominator);
   na := (a.Numerator * m) div a.Denominator;
   nb := (b.Numerator * m) div b.Denominator;
+
   Result := TFraction.Create(na + nb, m);
 end;
 
@@ -285,7 +288,7 @@ end;
 
 class function TFraction.LCM(a, b: Int64): Int64;
 begin
-  Result := a div (GCD(a, b) * b);
+  Result := (a div GCD(a, b)) * b;
 end;
 
 class operator TFraction.LessThan(a, b: TFraction): Boolean;
@@ -376,6 +379,16 @@ end;
 class operator TFraction.Subtract(a, b: TFraction): TFraction;
 begin
   Result := a + (-b);
+end;
+
+function TFraction.ToDouble: Double;
+begin
+  Result := FNum / FDenom;
+end;
+
+function TFraction.ToInteger: Integer;
+begin
+  Result := FNum div FDenom;
 end;
 
 function TFraction.ToString: string;
