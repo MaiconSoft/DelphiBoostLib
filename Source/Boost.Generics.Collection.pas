@@ -1,6 +1,7 @@
 unit Boost.Generics.Collection;
 
 interface
+ uses System.SysUtils, System.Generics.Defaults;
 
 Type
   TQueue<T> = record
@@ -142,14 +143,67 @@ Type
     property CustomToString: TCustomToString<T> read FCustomToString write FCustomToString;
   end;
 
-
+  TDictionary<TKEY,TVal> = record
+  private
+    FKeys:TArray<TKey>;
+    FValues:TArray<TVal>;
+    function GetItem(key: TKey): TVal;
+    procedure SetItem(key: TKey; const Value: TVal);
+    function IndexOf(key: TKey):Integer;
+    function GetItemDef(key: TKey; Def: TVal): TVal;
+    procedure Exchange(i,j:Integer);
+    class function GenericToString<T>(aValue: T): string; static;
+    function Same(a:TDictionary<TKEY,TVal>):boolean;
+    class function CompareKey(a,b:TKey):Integer;static;
+    class function CompareValue(a,b:TVal):Integer;static;
+  public
+    class operator Implicit(a: TDictionary<TKEY,TVal>): string;
+    class operator Implicit(a: TDictionary<TKEY,TVal>): Integer;
+    class operator Equal(a: TDictionary<TKEY,TVal>; b:integer): Boolean;
+    class operator NotEqual(a: TDictionary<TKEY,TVal>; b:integer): Boolean;
+    class operator GreaterThan(a: TDictionary<TKEY,TVal>; b:integer): Boolean;
+    class operator GreaterThanOrEqual(a: TDictionary<TKEY,TVal>; b:integer): Boolean;
+    class operator LessThan(a: TDictionary<TKEY,TVal>; b:integer): Boolean;
+    class operator LessThanOrEqual(a: TDictionary<TKEY,TVal>; b:integer): Boolean;
+    class operator Add(a: TDictionary<TKEY,TVal>; b:integer): Integer;
+    class operator Subtract(a: TDictionary<TKEY,TVal>; b:integer): Integer;
+    class operator Multiply(a: TDictionary<TKEY,TVal>; b:integer): Integer;
+    class operator Divide(a: TDictionary<TKEY,TVal>; b:integer): Double;
+    class operator IntDivide(a: TDictionary<TKEY, TVal>;
+  b: integer): Integer;
+    class operator Modulus(a: TDictionary<TKEY,TVal>; b:integer): Integer;
+    class operator Negative(a: TDictionary<TKEY,TVal>): integer;
+    class operator Positive(a: TDictionary<TKEY,TVal>): integer;
+    class operator Add(a,b: TDictionary<TKEY,TVal>): TDictionary<TKEY,TVal>;
+    class operator Subtract(a,b: TDictionary<TKEY,TVal>): TDictionary<TKEY,TVal>;
+    class operator Equal(a,b: TDictionary<TKEY,TVal>): Boolean;
+    class operator NotEqual(a,b: TDictionary<TKEY,TVal>): Boolean;
+    procedure Init;
+    procedure Remove(key: TKey); overload;
+    procedure Remove(keys: TArray<TKey>); overload;
+    procedure SortByKey;overload;
+    procedure SortByValue;overload;
+    procedure Sort(Custom:TFunc<TKey,TKey,TVal,TVal,Integer>);overload;
+    function Count:Integer;
+    procedure Clear;
+    function ToString:string;
+    procedure Add(key:TKey;Value:TVal); overload;
+    procedure Add(aKeys:TArray<TKey>; aValues:TArray<TVal>);overload;
+    function HasKey(key:TKey):boolean;
+    function HasValue(value: Tval): boolean;
+    constructor Create(aKeys:TArray<TKey>; aValues:TArray<TVal>);
+    property Item[key:TKey]: TVal read GetItem write SetItem; default;
+    property Item[key:TKey;Def:TVal]: TVal read GetItemDef;default;
+    property Keys:TArray<Tkey> read FKeys;
+    property Values:TArray<TVal> read FValues;
+  end;
 
   function Range(start, stop: Integer; Increment: Integer=1):TRange;
 
 implementation
 
 uses
-  System.SysUtils, System.Generics.Collections, RTTI, TypInfo;
+ System.Generics.Collections,Boost.arrays, RTTI, TypInfo;
 
 
 function Range(start, stop: Integer; Increment: Integer=1):TRange;
@@ -717,4 +771,394 @@ begin
 end;
 
 
+{ TDictionary<TKEY, TVal> }
+
+procedure TDictionary<TKEY, TVal>.Add(key: TKey; Value: TVal);
+var
+ Index:Integer;
+begin
+ if HasKey(key) then
+ begin
+   SetItem(key,value);
+   exit;
+ end;
+
+ TArray.Insert<Tkey>(length(FKeys),key,FKeys);
+ TArray.Insert<TVal>(length(Fvalues),value,Fvalues);
+end;
+
+
+procedure TDictionary<TKEY, TVal>.Add(aKeys: TArray<TKey>;
+  aValues: TArray<TVal>);
+var
+ max, kLen,vLen, i:integer;
+begin
+  kLen:= Length(aKeys);
+  vLen := Length(aValues);
+
+  If(kLen > vLen)then
+      max := vLen
+  else
+      max := kLen;
+
+  if max > 0 then
+    for i := 0 to max-1 do
+      Add(aKeys[i],aValues[i]);
+end;
+
+class operator TDictionary<TKEY, TVal>.Add(a: TDictionary<TKEY, TVal>;
+  b: integer): Integer;
+begin
+   result:= a.Count + b;
+end;
+
+class operator TDictionary<TKEY, TVal>.Add(a,
+  b: TDictionary<TKEY, TVal>): TDictionary<TKEY, TVal>;
+begin
+  Result := TDictionary<TKEY, TVal>.Create(a.FKeys,a.Values);
+  Result.Add(b.FKeys,b.Values);
+end;
+
+procedure TDictionary<TKEY, TVal>.Clear;
+begin
+  SetLength(FKeys,0);
+  SetLength(FValues,0);
+end;
+
+class function TDictionary<TKEY, TVal>.CompareKey(a, b: TKey): Integer;
+begin
+ Result:= TComparer<TKEY>.Default.Compare(a,b);
+end;
+
+class function TDictionary<TKEY, TVal>.CompareValue(a, b: TVal): Integer;
+begin
+ Result:= TComparer<TVal>.Default.Compare(a,b);
+end;
+
+function TDictionary<TKEY, TVal>.Count: Integer;
+begin
+ Result:= Length(fkeys);
+end;
+
+constructor TDictionary<TKEY, TVal>.Create(aKeys: TArray<TKey>;
+  aValues: TArray<TVal>);
+begin
+  Init;
+  Add(akeys,aValues);
+end;
+
+
+
+
+class operator TDictionary<TKEY, TVal>.Divide(a: TDictionary<TKEY,TVal>; b:integer): Double;
+begin
+ Result:= a.Count / b;
+end;
+
+class operator TDictionary<TKEY, TVal>.Equal(a: TDictionary<TKEY, TVal>;
+  b: integer): Boolean;
+begin
+  Result:= a.Count = b;
+end;
+
+class operator TDictionary<TKEY, TVal>.Equal(a,
+  b: TDictionary<TKEY, TVal>): Boolean;
+begin
+  Result:= a.Same(b);
+end;
+
+procedure TDictionary<TKEY, TVal>.Exchange(i, j: Integer);
+var
+ k:TKey;
+ v:Tval;
+begin
+ k := FKeys[i];
+ v := FValues[i];
+ FKeys[i] := FKeys[j];
+ FValues[i] := FValues[j];
+ FKeys[j] := k;
+ FValues[j] := v;
+end;
+
+function TDictionary<TKEY, TVal>.GetItem(key: TKey): TVal;
+var
+ Index:Integer;
+begin
+ Index := IndexOf(key);
+ if (Index < 0) or(Index > count) then
+   raise EArgumentOutOfRangeException.Create('Index:'+index.ToString+' out range ');
+ Result:= FValues[Index];
+end;
+
+function TDictionary<TKEY, TVal>.GetItemDef(key: TKey; Def: TVal): TVal;
+begin
+   if HasKey(key) then
+     Result:= Item[key]
+   else
+     Result:= Def;
+end;
+
+class operator TDictionary<TKEY, TVal>.GreaterThan(a: TDictionary<TKEY,TVal>;
+  b: integer): Boolean;
+begin
+    Result:= a.Count > b;
+end;
+
+class operator TDictionary<TKEY, TVal>.GreaterThanOrEqual(a: TDictionary<TKEY,TVal>;
+  b: integer): Boolean;
+begin
+  Result:= a.Count >= b;
+end;
+
+function TDictionary<TKEY, TVal>.HasKey(key:TKey): boolean;
+var
+ Index:Integer;
+begin
+ Index := IndexOf(key);
+ Result:= Index  > -1;
+
+end;
+
+function TDictionary<TKEY, TVal>.HasValue(value: Tval): boolean;
+begin
+ Result:=  TArray.IndexOf<Tval>(value, FValues,0) > -1;
+end;
+
+
+class operator TDictionary<TKEY, TVal>.Implicit(
+  a: TDictionary<TKEY, TVal>): string;
+begin
+  Result:= a.ToString;
+end;
+
+class operator TDictionary<TKEY, TVal>.Implicit(
+  a: TDictionary<TKEY, TVal>): Integer;
+begin
+  Result:= a.Count;
+end;
+
+function TDictionary<TKEY, TVal>.IndexOf(key: TKey): Integer;
+begin
+  Result:= TArray.IndexOf<Tkey>(key, FKeys,0);
+end;
+
+procedure TDictionary<TKEY, TVal>.Init;
+begin
+  Clear;
+end;
+
+
+class operator TDictionary<TKEY, TVal>.IntDivide(a: TDictionary<TKEY, TVal>;
+  b: integer): Integer;
+begin
+   result:= a.Count div b;
+end;
+
+class operator TDictionary<TKEY, TVal>.LessThan(a: TDictionary<TKEY,TVal>;
+  b: integer): Boolean;
+begin
+    Result:= a.Count < b;
+end;
+
+class operator TDictionary<TKEY, TVal>.LessThanOrEqual(a: TDictionary<TKEY,TVal>;
+  b: integer): Boolean;
+begin
+   Result:= a.Count <= b;
+end;
+
+class operator TDictionary<TKEY, TVal>.Modulus(a: TDictionary<TKEY,TVal>; b:integer): Integer;
+begin
+   result:= a.Count mod b;
+end;
+
+class operator TDictionary<TKEY, TVal>.Multiply(a: TDictionary<TKEY,TVal>; b:integer): Integer;
+begin
+   result:= a.Count * b;
+end;
+
+class operator TDictionary<TKEY, TVal>.Negative(a: TDictionary<TKEY,TVal>): integer;
+begin
+  result:= -a.Count;
+end;
+
+class operator TDictionary<TKEY, TVal>.NotEqual(a,
+  b: TDictionary<TKEY, TVal>): Boolean;
+begin
+   Result:= not a.Same(b);
+end;
+
+class operator TDictionary<TKEY, TVal>.NotEqual(a: TDictionary<TKEY,TVal>;
+  b: integer): Boolean;
+begin
+  Result:= a.Count <> b;
+end;
+
+class operator TDictionary<TKEY, TVal>.Positive(a: TDictionary<TKEY,TVal>): integer;
+begin
+   result:= a.Count;
+end;
+
+procedure TDictionary<TKEY, TVal>.Remove(keys: TArray<TKey>);
+var
+  key: TKEY;
+begin
+  for key in keys do
+    Remove(key);
+end;
+
+procedure TDictionary<TKEY, TVal>.Remove(key: TKey);
+var
+ Index:Integer;
+begin
+   Index := IndexOf(key);
+   if Index > -1 then
+   begin
+     TArray.Delete<TKEY>(Index,FKeys);
+     TArray.Delete<TVal>(Index,FValues);
+   end;
+end;
+
+function TDictionary<TKEY, TVal>.Same(a: TDictionary<TKEY, TVal>): boolean;
+var
+ i:Integer;
+ Key:TKEY;
+begin
+  if Count <> a.Count then
+    exit(False);
+
+  for Key in FKeys do
+  begin
+    if not a.HasKey(Key) then
+      exit(False);
+
+    if CompareValue(a[key] , Item[Key]) <> 0 then
+      exit(False);
+  end;
+  Result := True;
+end;
+
+procedure TDictionary<TKEY, TVal>.SetItem(key: TKey; const Value: TVal);
+var
+ Index:Integer;
+begin
+   Index := IndexOf(key);
+   if Index > -1 then
+     FValues[Index] := Value
+   else
+     Add(key,value);
+end;
+
+
+procedure TDictionary<TKEY, TVal>.Sort(
+  Custom: TFunc<TKey, TKey, TVal, TVal, Integer>);
+var
+ i,j:Integer;
+begin
+  if not Assigned(custom) or (Count=0) then
+    exit;
+  for i := 0 to High(Fkeys)-1 do
+    for j := i+1 to High(keys) do
+      if Custom(Fkeys[i],Fkeys[j],FValues[i],FValues[j]) > 0 then
+        Exchange(i,j);
+end;
+
+procedure TDictionary<TKEY, TVal>.SortByValue;
+begin
+  sort(function ( keyLeft, keyRight: TKey;
+    ValueLeft, ValueRight: TVal): integer
+    begin
+       Result:= CompareValue(ValueLeft, ValueRight);
+    end);
+end;
+
+class operator TDictionary<TKEY, TVal>.Subtract(
+  a,b: TDictionary<TKEY, TVal>): TDictionary<TKEY, TVal>;
+begin
+  Result := TDictionary<TKEY, TVal>.Create(a.FKeys,a.Values);
+  Result.Remove(b.FKeys);
+end;
+
+class operator TDictionary<TKEY, TVal>.Subtract(a: TDictionary<TKEY,TVal>; b:integer): Integer;
+begin
+     result:= a.Count - b;
+end;
+
+function TDictionary<TKEY, TVal>.ToString: string;
+var
+  i:integer;
+  Key,Val:string;
+
+begin
+  Result:= '[';
+  if Count > 0 then
+    for i := 0 to Count-1 do
+    begin
+      if i > 0 then
+        Result:= Result + ', ';
+      key:= GenericToString<Tkey>(FKeys[i]);
+      val:= GenericToString<TVal>(FValues[i]);
+
+      Result:= Result + Format('(%s: %s)',[key,val]);
+    end;
+  Result:= Result + ']';
+end;
+
+procedure TDictionary<TKEY, TVal>.SortByKey;
+begin
+  sort(function ( keyLeft, keyRight: TKey;
+    ValueLeft, ValueRight: TVal): integer
+    begin
+       Result:= CompareKey(keyLeft,keyRight);
+    end);
+end;
+
+class function TDictionary<TKEY, TVal>.GenericToString<T>(aValue: T): string;
+var
+  ElementValue, Value: TValue;
+  Data: PTypeData;
+  I: Integer;
+  AContext: TRttiContext;
+  ARecord: TRttiRecordType;
+  am:TRttiMethod;
+begin
+  TValue.Make(@aValue, System.TypeInfo(T), Value);
+
+  if Value.IsArray then
+  begin
+    if Value.GetArrayLength = 0 then
+      Exit('[ø]');
+
+    Result := '[';
+
+    for I := 0 to Value.GetArrayLength - 1 do
+    begin
+      ElementValue := Value.GetArrayElement(I);
+      Result := Result + ElementValue.ToString + ',';
+    end;
+
+    Result[Length(Result)] := ']';
+    Exit;
+  end;
+
+  Data := GetTypeData(Value.TypeInfo);
+
+  if (Value.IsObject) and (Value.TypeInfo^.Kind <> tkInterface) then
+     Exit(Format('0x%p %s', [pointer(Value.AsObject), Data.ClassType.ClassName]));
+
+  if Value.TypeInfo^.Kind = tkRecord then
+  begin
+    AContext := TRttiContext.Create;
+    ARecord := AContext.GetType(Value.TypeInfo).AsRecord;
+
+    Writeln('>>',Ord(ARecord.GetMethod('ToString').MethodKind));
+
+    Exit(Format('0x%p (Record ''%s'' @ %p)', [Value.GetReferenceToRawData, ARecord.Name, Data]));
+  end;
+
+  Result := Value.ToString;
+end;
+
+
+
 end.
+
