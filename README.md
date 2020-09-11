@@ -26,7 +26,7 @@ Helper for TStringDynArray.
 
 ## How to contribute
 
-If you like this project, and want contribute, you can:
+If you like this project and want contribute, you can:
 
 - Report issues in source or documentation;
 - Add a request for new features;
