@@ -4,7 +4,7 @@ interface
 
 uses
   SysUtils, Classes, System.Generics.Collections, System.types,
-  System.Generics.Defaults, logutils;
+  System.Generics.Defaults, Boost.Generics.Collection;
 
 type
   TProcVar<T> = reference to procedure(var Item: T);
@@ -23,6 +23,7 @@ type
       overload; static;
     class procedure Insert<T>(Index: Integer; const Value: T; var Values: TArray
       <T>); static;
+    class function Compare<T>(a, b: T): Integer; static;
     class function IndexOf<T>(const Value: T; const Values: TArray<T>; StartPos:
       Integer = 0): Integer; static;
     class function LastIndexOf<T>(const Value: T; var Values: TArray<T>; EndPos:
@@ -85,10 +86,15 @@ type
       TResult, T, TResult>; Acum: TResult): TResult; overload; static;
     class function Reduce<T, TResult>(var a: TArray<T>; FuncIteration: TFunc<
       TResult, T, Integer, TResult>; Acum: TResult): TResult; overload; static;
+    class function Max<T>(a: TArray<T>): T; static;
+    class function Min<T>(a: TArray<T>): T; static;
+    class function Group<T>(a: TArray<T>): TDictionary<T, Integer>; static;
+    class function ToString<T>(a: TArray<T>): string;overload; static;
+    class function ToString<T>(a: T): string;overload; static;
   end;
 
 implementation
-
+  uses System.Rtti, System.TypInfo;
 
 { TArray }
 
@@ -104,6 +110,68 @@ begin
 
   if result < 0 then
     exit(result + count);
+end;
+
+class function TArray.ToString<T>(a: T): string;
+var
+  ElementValue, Value: TValue;
+  Data: PTypeData;
+  I: Integer;
+  AContext: TRttiContext;
+  ARecord: TRttiRecordType;
+  am: TRttiMethod;
+begin
+  TValue.Make(@a, System.TypeInfo(T), Value);
+
+  if Value.IsArray then
+  begin
+    if Value.GetArrayLength = 0 then
+      Exit('[ø]');
+
+    Result := '[';
+
+    for I := 0 to Value.GetArrayLength - 1 do
+    begin
+      ElementValue := Value.GetArrayElement(I);
+      Result := Result + ElementValue.ToString + ',';
+    end;
+
+    Result[Length(Result)] := ']';
+    Exit;
+  end;
+
+  Data := GetTypeData(Value.TypeInfo);
+
+  if (Value.IsObject) and (Value.TypeInfo^.Kind <> tkInterface) then
+    Exit(Format('0x%p %s', [pointer(Value.AsObject), Data.ClassType.ClassName]));
+
+  if Value.TypeInfo^.Kind = tkRecord then
+  begin
+    AContext := TRttiContext.Create;
+    ARecord := AContext.GetType(Value.TypeInfo).AsRecord;
+
+    Writeln('>>', Ord(ARecord.GetMethod('ToString').MethodKind));
+
+    Exit(Format('0x%p (Record ''%s'' @ %p)', [Value.GetReferenceToRawData,
+      ARecord.Name, Data]));
+  end;
+
+  Result := Value.ToString;
+end;
+
+
+class function TArray.ToString<T>(a: TArray<T>): string;
+var
+  i: Integer;
+begin
+  Result := '[ ';
+  for i := 0 to length(a) - 1 do
+  begin
+    if i > 0 then
+      Result := Result + ', ';
+    Result := Result + ToString<T>(a[i]);
+  end;
+  Result := Result + ']';
 end;
 
 class procedure TArray.Union<T>(const a, b: TArray<T>; var Values: TArray<T>);
@@ -392,6 +460,15 @@ begin
   Result := true;
 end;
 
+class function TArray.Group<T>(a: TArray<T>): TDictionary<T, Integer>;
+var
+  e: T;
+begin
+  Result.Init;
+  for e in a do
+    Result[e] := Result[e, 0] + 1;
+end;
+
 class function TArray.Find<T>(Func: TFunc<T, Boolean>; const Values: TArray<T>;
   var value: T): Boolean;
 var
@@ -507,7 +584,7 @@ begin
 
   for i := StartPos to High(Values) do
   begin
-    if TComparer<T>.Default.Compare(Value, Values[i]) = 0 then
+    if Compare<T>(Value, Values[i]) = 0 then
       Exit(i);
   end;
 end;
@@ -531,6 +608,11 @@ begin
   end;
 end;
 
+class function TArray.Compare<T>(a, b: T): Integer;
+begin
+  Result := TComparer<T>.Default.Compare(a, b);
+end;
+
 class function TArray.CountItems<T>(const Value: T; const Values: TArray<T>): Integer;
 var
   i: Integer;
@@ -541,7 +623,7 @@ begin
 
   for i := 0 to High(Values) do
   begin
-    if TComparer<T>.Default.Compare(Value, Values[i]) = 0 then
+    if Compare<T>(Value, Values[i]) = 0 then
       inc(Result);
   end;
 end;
@@ -609,8 +691,36 @@ begin
 
   for i := EndPos downto 0 do
   begin
-    if TComparer<T>.Default.Compare(Value, Values[i]) = 0 then
+    if Compare<T>(Value, Values[i]) = 0 then
       Exit(i);
+  end;
+end;
+
+class function TArray.Max<T>(a: TArray<T>): T;
+var
+  e: T;
+begin
+  if Length(a) = 0 then
+    raise Exception.Create('Array empty, can''t get max value');
+  Result := a[0];
+  for e in a do
+  begin
+    if Compare<T>(e, result) > 0 then
+      Result := e;
+  end;
+end;
+
+class function TArray.Min<T>(a: TArray<T>): T;
+var
+  e: T;
+begin
+  if Length(a) = 0 then
+    raise Exception.Create('Array empty, can''t get max value');
+  Result := a[0];
+  for e in a do
+  begin
+    if Compare<T>(e, result) < 0 then
+      Result := e;
   end;
 end;
 

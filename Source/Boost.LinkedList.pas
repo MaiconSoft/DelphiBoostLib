@@ -35,7 +35,7 @@ type
     procedure CheckIndex(Index: Integer);
     class function GenericToString<T>(aValue: T): string; static;
   public
-    function ToString: string;
+    function ToString: string; override;
     procedure Remove(Node: TLinkedListNode<T>; QueueFree: boolean = False); overload;
     procedure Remove(Value: T); overload;
     function Extract(Index: Integer): TLinkedListNode<T>;
@@ -89,19 +89,19 @@ end;
 
 function TLinkedList<T>.AddAfter(Node: TLinkedListNode<T>; value: T): TLinkedListNode<T>;
 begin
-//  if not Assigned(Node) then
-//    raise EArgumentNilException.Create('Node not assinged');
-//
-//  if Node.Owner <> Self then
-//    raise EInvalidOp.Create('Node is not child from this object');
   CheckNode(Node);
 
   Result := Add;
   Result.Value := value;
 
-  Result.Next := Node.Next;
-  Node.Next := Result;
+  if Assigned(Node.Next) then
+  begin
+    Node.Next.Prev := Result;
+    Result.Next := Node.Next;
+  end;
   Result.Prev := Node;
+  Node.Next := Result;
+
   inc(FCount);
 end;
 
@@ -126,6 +126,8 @@ end;
 
 function TLinkedList<T>.AddFirst(Value: T): TLinkedListNode<T>;
 begin
+  if not Assigned(FFirst) then
+    exit(Add(Value));
   Result := AddBefore(FFirst, Value);
 end;
 
@@ -221,7 +223,6 @@ begin
   end;
 end;
 
-
 function TLinkedList<T>.Last: TLinkedListNode<T>;
 begin
   if FFirst = nil then
@@ -247,7 +248,7 @@ begin
   else
   begin
     Node.Prev.Next := Node.Next;
-    if Assigned(node.Next) then
+    if Assigned(Node.Next) then
       Node.Next.Prev := Node.Prev;
   end;
 
@@ -378,8 +379,6 @@ function TEnumeratorLinkedList<T>.GetCurrent: T;
 begin
   Result := node.Value;
 end;
-
-
 
 function TEnumeratorLinkedList<T>.MoveNext: Boolean;
 begin

@@ -21,7 +21,7 @@ Helper for TStringDynArray.
  - TDictionary<T>:  Generic record for create a dictionary compatible com System.Generics.Collections;
  - TSet<T>: Genereic record for extend Set concept in Delphi.  
 ### Boost.LinkedList [Beta];
- -TLinkedList<T>: Class implementation of Linked list; 	
+ - TLinkedList<T>: Class implementation of Linked list; 	
 <hr width=”100%”>
 
 ## How to contribute
