@@ -15,13 +15,18 @@ Helper for TIntegerDynArray.
 Helper for TStringDynArray.
 ### [Boost.Rational](Documentation/Boost.Rational.md);
  - TFraction: Record for easy manager rational numbers.
+
 ### [Boost.Generics.Collection](Documentation/Boost.Generics.Collection.md);
  - TQueue<T>: Generic record for create a queue compatible com System.Generics.Collections;
  - TStack<T>: Generic record for create a stack compatible com System.Generics.Collections;
  - TDictionary<T>:  Generic record for create a dictionary compatible com System.Generics.Collections;
  - TSet<T>: Genereic record for extend Set concept in Delphi.  
-### Boost.LinkedList [Beta];
+
+### Boost.LinkedList [Beta]
  - TLinkedList<T>: Class implementation of Linked list; 	
+
+### [Boost.Process](Documentation/Boost.Process.md) [Beta]
+ - TPipe: Class implementation for create Pipe between command line applications and main program; 	 	
 <hr width=”100%”>
 
 ## How to contribute
