@@ -29,6 +29,10 @@ Helper for TStringDynArray.
  - TPipe: Class implementation for create Pipe between command line applications and main program; 	 	
 <hr width=”100%”>
 
+### [Boost.Bitset](Documentation/Boost.Bitset.md) [Beta]
+ - TBitset: Class implementation for manipulate bits as ARRAY of boolean; 	 	
+<hr width=”100%”>
+
 ## How to contribute
 
 If you like this project and want contribute, you can:
