@@ -14,7 +14,7 @@ The **TPipe** implement a class for easy manager command line aplications and [r
 ```pascal
 	constructor Create; overload;
 	constructor Create(CommandLine: string); overload;
-    destructor Destroy; override;	
+	destructor Destroy; override;	
  ```
 
 > Constructors for TPipe, support:
