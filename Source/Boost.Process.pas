@@ -41,7 +41,7 @@ type
     procedure Writeln(value: string);
     function Wait(Ms: DWord = INFINITE): boolean;
     function Run(CommandLine: string): Boolean;
-    function ReadAllData: string;
+    function ReadAllData(Func: TProc<string> = nil): string;
     function Kill: boolean;
     constructor Create; overload;
     constructor Create(CommandLine: string); overload;
@@ -126,18 +126,23 @@ begin
     Result := SetHandleInformation(h, HANDLE_FLAG_INHERIT, 0);
 end;
 
-function TPipe.ReadAllData: string;
+function TPipe.ReadAllData(Func: TProc<string> = nil): string;
 var
   hParentStdOut: THandle;
+  data: string;
 begin
   Result := '';
   hParentStdOut := GetStdHandle(STD_OUTPUT_HANDLE);
-
+  FillChar(chBuf, length(chBuf), #0);
   repeat
     bSuccess := ReadFile(g_hChildStd_OUT_Rd, chBuf, BUFSIZE, dwRead, nil);
+
     if (not bSuccess or (dwRead = 0)) then
       break;
-    Result := Result + string(chBuf);
+    data := string(chBuf);
+    if Assigned(Func) then
+      Func(data);
+    Result := Result + data;
   until False;
 end;
 
