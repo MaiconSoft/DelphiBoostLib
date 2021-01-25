@@ -188,16 +188,85 @@ end;
 <hr width=”100%”>
 
 ``` pascal
-	function ReadAllData: string;
+	function ReadAllData(Func: TProc<string> = nil): string;
 ```
 > Function to read text from child process after it close (this function blocking and will wait for it close).
 
 *Params:*
-> - None;
+> - Func(TProc<string>): This function is a callback from pipe, this is usefull for interate with other applications, read strings outputs like progress. It can be omited, in this case, all string data can be read in return of function, when the other application close. Tip: If use *ReadAllData* in Vcl application  is recomend use *Application.ProcessMessages* inside *Func*, this can reduce hung up of application, but this no work if the other appplication no update your status by using sdout messages.
 
 *Return:*
 >  - Result(string): Text from child process;
 
+
+*Example:*
+
+``` pascal
+procedure Log(data: string);
+begin
+  Savlog(data); // SavLog is a function to store in disk
+  Application.ProcessMessages; // Reduce hung up
+end;
+
+procedure TForm1.btn1Click(Sender: TObject);
+begin
+  p := TPipe.Create('youtube-dl -f 22 "https://youtu.be/cRWWzd_yaig"'); // Create and run youtube-dl
+
+  mmo1.Text := p.ReadAllData(Log); // Read all strings data and save in memo
+  p.Free;
+end;
+```
+> Note: Youtube-dl can be found [at](https://youtube-dl.org/latest).
+
+This is the output of log:
+```
+[25/01/2021 11:49:45]  [youtube] cRWWzd_yaig: Downloading webpage
+
+[25/01/2021 11:49:46]  [download] Destination: Introducing RAD Studio 10.4 Sydney-cRWWzd_yaig.mp4
+
+[25/01/2021 11:49:46]  
+[download]   0.0% of 14.92MiB at Unknown speed ETA Unknown ETA
+[download]   0.0% of 14.92MiB at Unknown speed ETA Unknown ETA
+[25/01/2021 11:49:46]  
+[download]   0.0% of 14.92MiB at 509.69KiB/s ETA 00:29        
+[download]   0.0% of 14.92MiB at Unknown speed ETA Unknown ETA
+[25/01/2021 11:49:46]  
+[download]   0.1% of 14.92MiB at  1.07MiB/s ETA 00:13         
+[download]   0.0% of 14.92MiB at Unknown speed ETA Unknown ETA
+[25/01/2021 11:49:46]  
+[download]   0.2% of 14.92MiB at  1.71MiB/s ETA 00:08         
+[download]   0.0% of 14.92MiB at Unknown speed ETA Unknown ETA
+[25/01/2021 11:49:46]  
+[download]   0.4% of 14.92MiB at  2.27MiB/s ETA 00:06         
+[download]   0.8% of 14.92MiB at  2.87MiB/s ETA 00:05         
+[25/01/2021 11:49:46]  
+[download]   1.7% of 14.92MiB at  2.89MiB/s ETA 00:05         
+[download]   0.8% of 14.92MiB at  2.87MiB/s ETA 00:05         
+[25/01/2021 11:49:46]  
+[download]   3.3% of 14.92MiB at  4.58MiB/s ETA 00:03         
+[download]   0.8% of 14.92MiB at  2.87MiB/s ETA 00:05         
+[25/01/2021 11:49:46]  
+[download]   6.7% of 14.92MiB at  6.52MiB/s ETA 00:02         
+[download]   0.8% of 14.92MiB at  2.87MiB/s ETA 00:05         
+[25/01/2021 11:49:46]  
+[download]  13.4% of 14.92MiB at  8.23MiB/s ETA 00:01         
+[download]   0.8% of 14.92MiB at  2.87MiB/s ETA 00:05         
+[25/01/2021 11:49:47]  
+[download]  26.8% of 14.92MiB at  9.47MiB/s ETA 00:01         
+[download]   0.8% of 14.92MiB at  2.87MiB/s ETA 00:05         
+[25/01/2021 11:49:47]  
+[download]  53.6% of 14.92MiB at 10.27MiB/s ETA 00:00         
+[download]   0.8% of 14.92MiB at  2.87MiB/s ETA 00:05         
+[25/01/2021 11:49:47]  
+[download]  80.4% of 14.92MiB at 10.58MiB/s ETA 00:00         
+[download]   0.8% of 14.92MiB at  2.87MiB/s ETA 00:05         
+[25/01/2021 11:49:48]  
+[download] 100.0% of 14.92MiB at 10.72MiB/s ETA 00:00         
+[download]   0.8% of 14.92MiB at  2.87MiB/s ETA 00:05         
+[25/01/2021 11:49:48]  
+[download] 100% of 14.92MiB in 00:02                          
+[download]   0.8% of 14.92MiB at  2.87MiB/s ETA 00:05         
+```
 <hr width=”100%”>
 
 ``` pascal
