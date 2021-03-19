@@ -644,7 +644,7 @@ end;
 
 procedure TIntegerHelperDynArray.Shift(aCount: Integer = 1);
 begin
-  TArray.Shift<Integer>(self);
+  TArray.Shift<Integer>(self, aCount);
 end;
 
 procedure TIntegerHelperDynArray.Shuffle;
