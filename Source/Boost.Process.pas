@@ -23,7 +23,8 @@ type
     piProcInfo: TProcessInformation;
     bSuccess: boolean;
     class function NewSecurityAttributes: TSecurityAttributes;
-    class function NewStartInfo(HRead, HWrite: THandle): TStartupInfoA;
+    class function NewStartInfo(HRead, HWrite: THandle; Visible: boolean = false):
+      TStartupInfoA;
     function Pipe(var HRead: THandle; var HWrite: THandle; UseWrite: boolean =
       False): boolean;
     class function Assert(state: boolean; Msg: string): boolean;
@@ -34,17 +35,18 @@ type
     procedure Write(value: string); overload;
     procedure Write(FmtString: string; Params: array of const); overload;
     procedure WriteA(value: AnsiString); overload;
+    procedure WritelnA(value: AnsiString); overload;
     procedure WriteA(FmtString: AnsiString; Params: array of const); overload;
     procedure Write(value: byte); overload;
     procedure Write(value: AnsiChar); overload;
     procedure Write(value: DWORD); overload;
     procedure Writeln(value: string);
     function Wait(Ms: DWord = INFINITE): boolean;
-    function Run(CommandLine: string): Boolean;
+    function Run(CommandLine: string; Visible: boolean = false): Boolean;
     function ReadAllData(Func: TProc<string> = nil): string;
     function Kill: boolean;
     constructor Create; overload;
-    constructor Create(CommandLine: string); overload;
+    constructor Create(CommandLine: string; Visible: boolean = false); overload;
     destructor Destroy; override;
   end;
 
@@ -64,10 +66,10 @@ begin
   saAttr := NewSecurityAttributes;
 end;
 
-constructor TPipe.Create(CommandLine: string);
+constructor TPipe.Create(CommandLine: string; Visible: boolean = false);
 begin
   Create;
-  Run(CommandLine);
+  Run(CommandLine, Visible);
 end;
 
 destructor TPipe.Destroy;
@@ -100,11 +102,12 @@ begin
   end;
 end;
 
-class function TPipe.NewStartInfo(HRead, HWrite: THandle): TStartupInfoA;
+class function TPipe.NewStartInfo(HRead, HWrite: THandle; Visible: boolean):
+  TStartupInfoA;
 begin
   FillChar(Result, Sizeof(TStartUpInfo), #0);
   Result.cb := SizeOf(TStartUpInfo);
-  Result.wShowWindow := SW_HIDE;
+  Result.wShowWindow := ord(Visible);
   Result.hStdError := HWrite;
   Result.hStdOutput := HWrite;
   Result.hStdInput := HRead;
@@ -146,7 +149,7 @@ begin
   until False;
 end;
 
-function TPipe.Run(CommandLine: string): Boolean;
+function TPipe.Run(CommandLine: string; Visible: boolean = false): Boolean;
 var
   b: byte;
 begin
@@ -156,7 +159,7 @@ begin
   Assert(Pipe(g_hChildStd_IN_Rd, g_hChildStd_IN_Wr, True),
     'Failed to create pipe for standard output. System error message: ');
 
-  siStartInfo := NewStartInfo(g_hChildStd_IN_Rd, g_hChildStd_OUT_Wr);
+  siStartInfo := NewStartInfo(g_hChildStd_IN_Rd, g_hChildStd_OUT_Wr, Visible);
 
   Assert(NewProcess(CommandLine),
     'Failed creating the console process. System error msg: ');
@@ -179,6 +182,11 @@ end;
 procedure TPipe.Writeln(value: string);
 begin
   Write(value + #10);
+end;
+
+procedure TPipe.WritelnA(value: AnsiString);
+begin
+  writeA(value + #10);
 end;
 
 function TPipe.Wait(Ms: DWord): boolean;
