@@ -3,7 +3,7 @@ unit Boost.Store;
 interface
 
 uses
-  Sysutils, Classes, IniFiles, Boost.Generics.Collection;
+  Sysutils, x, Classes, IniFiles, Boost.Generics.Collection, System.NetEncoding;
 
 const
   DEFAULT_DOUBLE = 0.0;
@@ -22,35 +22,40 @@ type
     function GetInifile: TInifile;
     procedure Update;
     procedure DisposeInifile;
-    function GetGeneric(Key: string; def: variant): variant;
-    procedure SetGeneric(Key: string; value: variant);
-    function GetGenericStream(Key: string): TStream;
+    function GetGeneric(Key: string; def: Variant): Variant;
+    procedure SetGeneric(Key: string; value: Variant);
+    function GetGenericStream(Key: string; value: TStream): TStream;
     procedure SetGenericStream(Key: string; value: TStream);
-    function GetDoubleDefault(Key: string; Default: double): Double;
-    function GetDouble(Key: string): Double;
-    procedure SetDouble(Key: string; const Value: Double);
+    function GetDoubleDefault(Key: string; Default: double): double;
+    function GetDouble(Key: string): double;
+    procedure SetDouble(Key: string; const value: double);
     function GetStringDefault(Key, Default: string): string;
     function GetString(Key: string): string;
-    procedure SetString(Key: string; const Value: string);
+    procedure SetString(Key: string; const value: string);
     function GetIntegerDefault(Key: string; Default: Integer): Integer;
     function GetInteger(Key: string): Integer;
-    procedure SetInteger(Key: string; const Value: Integer);
-    function GetDateTimeDef(Key: string; default: TDateTime): TDateTime;
+    procedure SetInteger(Key: string; const value: Integer);
+    function GetDateTimeDef(Key: string; Default: TDateTime): TDateTime;
     function GetDateTime(Key: string): TDateTime;
-    procedure SetDateTime(Key: string; const Value: TDateTime);
-    function GetStream(Key: string): TStream;
-    procedure SetStream(Key: string; const Value: TStream);
+    procedure SetDateTime(Key: string; const value: TDateTime);
+    procedure GetStream(Key: string; value: TStream);
+    procedure SetStream(Key: string; const value: TStream);
   public
-    property AsFloatDef[Key: string; Default: double]: Double read GetDoubleDefault;
-    property AsFloat[Key: string]: Double read GetDouble write SetDouble;
-    property AsStrDef[Key: string; Default: string]: string read GetStringDefault;
+    property AsFloatDef[Key: string; Default: double]: double
+      read GetDoubleDefault;
+    property AsFloat[Key: string]: double read GetDouble write SetDouble;
+    property AsStrDef[Key: string; Default: string]: string
+      read GetStringDefault;
     property AsStr[Key: string]: string read GetString write SetString;
-    property AsIntDef[Key: string; Default: Integer]: Integer read GetIntegerDefault;
+    property AsIntDef[Key: string; Default: Integer]: Integer
+      read GetIntegerDefault;
     property AsInt[Key: string]: Integer read GetInteger write SetInteger;
-    property AsDateTimeDef[Key: string; default: TDateTime]: TDateTime read
-      GetDateTimeDef;
-    property AsDateTime[Key: string]: TDateTime read GetDateTime write SetDateTime;
-    property AsStream[Key: string]: TStream read GetStream write SetStream;
+    property AsDateTimeDef[Key: string; default: TDateTime]: TDateTime
+      read GetDateTimeDef;
+    property AsDateTime[Key: string]: TDateTime read GetDateTime
+      write SetDateTime;
+    property SetAsStream[Key: string]: TStream write SetStream;
+    property GetAsStream[Key: string]: TStream write GetStream;
     property ReduceMemory: Boolean read FReduceMemory write FReduceMemory;
   end;
 
@@ -64,7 +69,7 @@ const
 
 procedure RegisterStore;
 begin
-  Store := TStore.create;
+  Store := TStore.Create;
 end;
 
 procedure UnregisterStore;
@@ -101,42 +106,53 @@ begin
   Result := GetDateTimeDef(Key, DEFAULT_DATETIME);
 end;
 
-function TStore.GetDateTimeDef(Key: string; default: TDateTime): TDateTime;
+function TStore.GetDateTimeDef(Key: string; Default: TDateTime): TDateTime;
 begin
   Result := GetDoubleDefault(Key, default);
 end;
 
-function TStore.GetDouble(Key: string): Double;
+function TStore.GetDouble(Key: string): double;
 begin
   Result := GetDoubleDefault(Key, DEFAULT_DOUBLE);
 end;
 
-function TStore.GetDoubleDefault(Key: string; Default: double): Double;
+function TStore.GetDoubleDefault(Key: string; Default: double): double;
 begin
   Result := GetGeneric(Key, Default);
 end;
 
-function TStore.GetGeneric(Key: string; def: variant): variant;
+function TStore.GetGeneric(Key: string; def: Variant): Variant;
 begin
-  var a := 0;
+  var
+  a := 0;
   if FData.HasKey(Key) then
-    exit(fdata[Key]);
+    exit(FData[Key]);
 
   Result := GetInifile.ReadString(SEASON, Key, def);
   FData.Add(Key, Result);
 end;
 
-function TStore.GetGenericStream(Key: string): TStream;
+function TStore.GetGenericStream(Key: string; value: TStream): TStream;
+var
+  data: TArray<byte>;
+  code: string;
 begin
-  Result := TMemoryStream.Create;
-  GetInifile.ReadBinaryStream(SEASON, Key, Result);
+  code := GetGeneric(Key, '');
+
+  if (code = '') then
+    exit;
+
+  data := TNetEncoding.Base64.DecodeStringToBytes(code);
+
+//  value.Seek(0, 0);
+  value.Write(data, Length(data));
 end;
 
 function TStore.GetInifile: TInifile;
 begin
   if not Assigned(FInifile) then
-    FInifile := TIniFile.Create(ChangeFileExt(ParamStr(0), '.store.ini'));
-  result := FInifile;
+    FInifile := TInifile.Create(ChangeFileExt(ParamStr(0), '.store.ini'));
+  Result := FInifile;
 end;
 
 function TStore.GetInteger(Key: string): Integer;
@@ -149,9 +165,9 @@ begin
   Result := GetGeneric(Key, Default);
 end;
 
-function TStore.GetStream(Key: string): TStream;
+procedure TStore.GetStream(Key: string; value: TStream);
 begin
-  Result := GetGenericStream(Key);
+  GetGenericStream(Key, value);
 end;
 
 function TStore.GetString(Key: string): string;
@@ -164,19 +180,20 @@ begin
   Result := GetGeneric(Key, Default);
 end;
 
-procedure TStore.SetDateTime(Key: string; const Value: TDateTime);
+procedure TStore.SetDateTime(Key: string; const value: TDateTime);
 begin
-  SetDouble(Key, Value);
+  SetDouble(Key, value);
 end;
 
-procedure TStore.SetDouble(Key: string; const Value: Double);
+procedure TStore.SetDouble(Key: string; const value: double);
 begin
-  SetGeneric(Key, Value);
+  SetGeneric(Key, value);
 end;
 
-procedure TStore.SetGeneric(Key: string; value: variant);
+procedure TStore.SetGeneric(Key: string; value: Variant);
 begin
-  var has := FData.HasKey(Key);
+  var
+  has := FData.HasKey(Key);
   if FData.HasKey(Key) then
     if FData.Item[Key] = value then
       exit;
@@ -186,23 +203,34 @@ begin
 end;
 
 procedure TStore.SetGenericStream(Key: string; value: TStream);
+var
+  data: TArray<byte>;
+  code: string;
+  size: Int64;
 begin
-  GetInifile.WriteBinaryStream(SEASON, Key, value);
+  size := value.size;
+  value.Seek(0, 0);
+  SetLength(data, size);
+  value.Read(data, size);
+
+  code := TNetEncoding.Base64.EncodeBytesToString(data, size);
+
+  SetString(Key, code);
 end;
 
-procedure TStore.SetInteger(Key: string; const Value: Integer);
+procedure TStore.SetInteger(Key: string; const value: Integer);
 begin
-  SetGeneric(Key, Value);
+  SetGeneric(Key, value);
 end;
 
-procedure TStore.SetStream(Key: string; const Value: TStream);
+procedure TStore.SetStream(Key: string; const value: TStream);
 begin
-  SetGenericStream(Key, Value);
+  SetGenericStream(Key, value);
 end;
 
-procedure TStore.SetString(Key: string; const Value: string);
+procedure TStore.SetString(Key: string; const value: string);
 begin
-  SetGeneric(Key, Value);
+  SetGeneric(Key, value);
 end;
 
 procedure TStore.Update;
@@ -216,10 +244,11 @@ begin
 end;
 
 initialization
-  RegisterStore;
+
+RegisterStore;
 
 finalization
-  UnregisterStore;
+
+UnregisterStore;
 
 end.
-
