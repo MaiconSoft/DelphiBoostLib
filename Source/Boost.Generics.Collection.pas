@@ -234,7 +234,7 @@ Type
   public
     constructor Create(Items: TArray<T>; Priorities: TArray<Integer>);
     function GetEnumerator: TEnumerator<T>;
-    function Enqueue(const Value: T; const Priority: Integer = Integer.MinValue)
+    function Enqueue(const Value: T; const Priority: Integer = Integer.MaxValue)
       : Boolean; inline;
     function Dequeue: T; inline;
     function DequeueEx: TPair<T>; inline;
@@ -1598,7 +1598,7 @@ begin
       if (Length(Priorities) > i) then
         Priority := Priorities[i]
       else
-        Priority := Integer.MinValue;
+        Priority := Integer.MaxValue;
       Enqueue(Items[i], Priority);
     end;
   FEnableSort := True;
@@ -1654,7 +1654,7 @@ begin
     Sort(
       function(Left, Right: TPair<T>): Integer
       begin
-        if (Right.Priority < Left.Priority) then
+        if (Right.Priority > Left.Priority) then
           Result := 1
         else
           Result := -1;
