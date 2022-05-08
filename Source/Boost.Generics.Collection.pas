@@ -1,4 +1,4 @@
-unit Boost.Generics.Collection;
+ï»¿unit Boost.Generics.Collection;
 
 interface
 
@@ -204,6 +204,50 @@ Type
     property Values: TArray<TVal> read FValues;
   end;
 
+  TPriorityQueue<T> = record
+  private type
+    TPair<T> = record
+      Priority: Integer;
+      Value: T;
+      constructor Create(Priority: Integer; Value: T);
+    end;
+  private
+    FItems: TArray<TPair<T>>;
+    FCapacity: Integer;
+    FEnableSort: Boolean;
+    procedure Sort(); overload;
+    procedure Sort(Custom: TFunc<TPair<T>, TPair<T>, Integer>); overload;
+
+  type
+    TEnumerator<T> = record
+    private
+      FList: TArray<T>;
+      FIndex: Integer;
+      function GetCurrent: T; inline;
+      function DoGetCurrent: T;
+      function DoMoveNext: Boolean;
+    public
+      constructor Create(const AList: TArray<T>);
+      function MoveNext: Boolean; inline;
+      property Current: T read GetCurrent;
+    end;
+  public
+    constructor Create(Items: TArray<T>; Priorities: TArray<Integer>);
+    function GetEnumerator: TEnumerator<T>;
+    function Enqueue(const Value: T; const Priority: Integer = Integer.MinValue)
+      : Boolean; inline;
+    function Dequeue: T; inline;
+    function DequeueEx: TPair<T>; inline;
+    function Peek: T; inline;
+    function Count: Integer; inline;
+    procedure Clear;
+    function IsFull: Boolean;
+    function IsEmpty: Boolean;
+    function ToArray: TArray<T>;
+    procedure TrimExcess;
+    property Capacity: Integer read FCapacity write FCapacity;
+  end;
+
   TArrays<T> = record
   private
     FItems: TArray<T>;
@@ -232,17 +276,17 @@ Type
     procedure Delete(const Index, Count: Integer); overload;
     procedure Clear;
     procedure Sort(Custom: TFunc<T, T, Integer>); overload;
-    procedure Sort;overload;
+    procedure Sort; overload;
     procedure SortReverse;
     procedure Reverse;
     procedure Shuffle;
     function IndexOf(const Value: T; StartPos: Integer = 0): Integer;
     function ToString: string; overload;
     procedure Exchange(const Index1, index2: Integer);
-    function Max:T;
-    function Min:T;
-    function IsEmpty:boolean;
-    function Clone(Len:Integer= maxint):TArrays<T>;
+    function Max: T;
+    function Min: T;
+    function IsEmpty: Boolean;
+    function Clone(Len: Integer = MaxInt): TArrays<T>;
     function Group: TDictionary<T, Integer>;
     property Current: T read GetCurrent;
     property AsArray: TArray<T> read FItems;
@@ -250,8 +294,8 @@ Type
     property Length: Integer read GetLength write SetLength;
   end;
 
-function Range(start, stop: Integer; Increment: Integer = 1): TRange;overload;
-function Range(Count: Integer): TRange;overload;
+function Range(start, stop: Integer; Increment: Integer = 1): TRange; overload;
+function Range(Count: Integer): TRange; overload;
 
 implementation
 
@@ -265,7 +309,7 @@ end;
 
 function Range(Count: Integer): TRange;
 begin
-  Result := TRange.Create(0, Count-1, 1);
+  Result := TRange.Create(0, Count - 1, 1);
 end;
 
 { TQueue }
@@ -790,7 +834,7 @@ begin
   if Value.IsArray then
   begin
     if Value.GetArrayLength = 0 then
-      exit('[ø]');
+      exit('[ï¿½]');
 
     Result := '[';
 
@@ -843,18 +887,18 @@ end;
 procedure TDictionary<TKEY, TVal>.Add(aKeys: TArray<TKEY>;
   aValues: TArray<TVal>);
 var
-  max, kLen, vLen, i: Integer;
+  Max, kLen, vLen, i: Integer;
 begin
   kLen := Length(aKeys);
   vLen := Length(aValues);
 
   If (kLen > vLen) then
-    max := vLen
+    Max := vLen
   else
-    max := kLen;
+    Max := kLen;
 
-  if max > 0 then
-    for i := 0 to max - 1 do
+  if Max > 0 then
+    for i := 0 to Max - 1 do
       Add(aKeys[i], aValues[i]);
 end;
 
@@ -1179,7 +1223,7 @@ begin
   if Value.IsArray then
   begin
     if Value.GetArrayLength = 0 then
-      exit('[ø]');
+      exit('[ï¿½]');
 
     Result := '[';
 
@@ -1240,7 +1284,7 @@ begin
   SetLength(0);
 end;
 
-function TArrays<T>.Clone(Len:Integer= maxint): TArrays<T>;
+function TArrays<T>.Clone(Len: Integer = MaxInt): TArrays<T>;
 begin
   Result.FItems := copy(FItems, 0, Len);
 end;
@@ -1249,7 +1293,6 @@ class function TArrays<T>.Compare(a, b: T): Integer;
 begin
   Result := TComparer<T>.Default.Compare(a, b);
 end;
-
 
 class function TArrays<T>.Create(Items: TArray<T>): TArrays<T>;
 begin
@@ -1328,9 +1371,9 @@ begin
   Insert(Index, Value.FItems);
 end;
 
-function TArrays<T>.IsEmpty: boolean;
+function TArrays<T>.IsEmpty: Boolean;
 begin
- Result:= Length = 0;
+  Result := Length = 0;
 end;
 
 function TArrays<T>.GetLength: Integer;
@@ -1361,7 +1404,7 @@ begin
   Result := FItems[0];
   for e in FItems do
   begin
-    if Compare(e, result) > 0 then
+    if Compare(e, Result) > 0 then
       Result := e;
   end;
 end;
@@ -1375,7 +1418,7 @@ begin
   Result := FItems[0];
   for e in FItems do
   begin
-    if Compare(e, result) < 0 then
+    if Compare(e, Result) < 0 then
       Result := e;
   end;
 end;
@@ -1391,7 +1434,7 @@ var
   ALength, halfLength: Integer;
   i: Integer;
 begin
-  ALength := length;
+  ALength := Length;
   if ALength < 2 then
     exit;
   halfLength := ALength div 2;
@@ -1412,16 +1455,16 @@ end;
 
 procedure TArrays<T>.Shuffle;
 var
-  randomIndex: integer;
-  cnt: integer;
-  count: integer;
+  randomIndex: Integer;
+  cnt: Integer;
+  Count: Integer;
 begin
-  count := length;
+  Count := Length;
   Randomize;
 
-  for cnt := 0 to -1 + count do
+  for cnt := 0 to -1 + Count do
   begin
-    randomIndex := Random(-cnt + count);
+    randomIndex := Random(-cnt + Count);
     Exchange(cnt, cnt + randomIndex);
   end;
 end;
@@ -1444,8 +1487,6 @@ begin
     end);
 end;
 
-
-
 procedure TArrays<T>.Sort(Custom: TFunc<T, T, Integer>);
 var
   i, j, ALength: Integer;
@@ -1460,9 +1501,9 @@ end;
 
 function TArrays<T>.ToString(): string;
 var
-  i,ALength: Integer;
+  i, ALength: Integer;
 begin
-  ALength:= Length;
+  ALength := Length;
   Result := '[ ';
 
   for i := 0 to ALength - 1 do
@@ -1488,7 +1529,7 @@ begin
   if Value.IsArray then
   begin
     if Value.GetArrayLength = 0 then
-      exit('[ø]');
+      exit('[ï¿½]');
 
     Result := '[';
 
@@ -1520,6 +1561,177 @@ begin
   end;
 
   Result := Value.ToString;
+end;
+
+{ TPriorityQueue<T>.TPair<T> }
+
+constructor TPriorityQueue<T>.TPair<T>.Create(Priority: Integer; Value: T);
+begin
+  self.Priority := Priority;
+  self.Value := Value;
+end;
+
+{ TPriorityQueue<T> }
+
+procedure TPriorityQueue<T>.Clear;
+begin
+  SetLength(FItems, 0);
+end;
+
+function TPriorityQueue<T>.Count: Integer;
+begin
+  Result := Length(FItems);
+end;
+
+constructor TPriorityQueue<T>.Create(Items: TArray<T>;
+Priorities: TArray<Integer>);
+var
+  i, Priority: Integer;
+begin
+  FCapacity := -1;
+  SetLength(FItems, 0);
+  FEnableSort := False;
+  if Length(Items) > 0 then
+    for i := 0 to High(Items) do
+    begin
+
+      if (Length(Priorities) > i) then
+        Priority := Priorities[i]
+      else
+        Priority := Integer.MinValue;
+      Enqueue(Items[i], Priority);
+    end;
+  FEnableSort := True;
+  Sort;
+end;
+
+function TPriorityQueue<T>.Dequeue: T;
+begin
+  Result := DequeueEx.Value;
+end;
+
+function TPriorityQueue<T>.DequeueEx: TPair<T>;
+begin
+  if IsEmpty then
+    raise EArgumentOutOfRangeException.Create('Queue is Empty');
+  Result := FItems[high(FItems)];
+  Delete(FItems, high(FItems), 1);
+end;
+
+function TPriorityQueue<T>.Enqueue(const Value: T;
+const Priority: Integer): Boolean;
+begin
+  if IsFull then
+    exit(False);
+  Insert([TPair<T>.Create(Priority, Value)], FItems, 0);
+  Result := True;
+  Sort;
+end;
+
+function TPriorityQueue<T>.GetEnumerator: TEnumerator<T>;
+begin
+  Result := TEnumerator<T>.Create(ToArray);
+end;
+
+function TPriorityQueue<T>.IsEmpty: Boolean;
+begin
+  Result := Count = 0;
+end;
+
+function TPriorityQueue<T>.IsFull: Boolean;
+begin
+  Result := (FCapacity > 0) and (Count >= FCapacity);
+end;
+
+function TPriorityQueue<T>.Peek: T;
+begin
+  Result := FItems[high(FItems)].Value;
+end;
+
+procedure TPriorityQueue<T>.Sort;
+begin
+  if (FEnableSort) then
+    Sort(
+      function(Left, Right: TPair<T>): Integer
+      begin
+        if (Right.Priority < Left.Priority) then
+          Result := 1
+        else
+          Result := -1;
+      end);
+end;
+
+procedure TPriorityQueue<T>.Sort(Custom: TFunc<TPair<T>, TPair<T>, Integer>);
+var
+  i, j, ALength: Integer;
+  tmp: TPair<T>;
+begin
+  ALength := Count;
+  if (ALength > 0) and (Assigned(Custom)) then
+    for i := 0 to ALength - 2 do
+      for j := i + 1 to ALength - 1 do
+        if Custom(FItems[i], FItems[j]) > 0 then
+        begin
+          tmp := FItems[i];
+          FItems[i] := FItems[j];
+          FItems[j] := tmp;
+        end;
+end;
+
+function TPriorityQueue<T>.ToArray: TArray<T>;
+var
+  i: Integer;
+begin
+  SetLength(Result, 0);
+
+  if (IsEmpty) then
+    exit;
+
+  SetLength(Result, Count);
+
+  for i := 0 to Count - 1 do
+    Result[Count - 1 - i] := FItems[i].Value;
+end;
+
+procedure TPriorityQueue<T>.TrimExcess;
+begin
+  if (Count > FCapacity) then
+  begin
+    FEnableSort := False;
+    while Count > FCapacity do
+      Dequeue;
+    FEnableSort := True;
+    Sort;
+  end;
+end;
+
+{ TPriorityQueue<T>.TEnumerator<T> }
+
+constructor TPriorityQueue<T>.TEnumerator<T>.Create(const AList: TArray<T>);
+begin
+  FList := AList;
+  FIndex := -1;
+end;
+
+function TPriorityQueue<T>.TEnumerator<T>.DoGetCurrent: T;
+begin
+  Result := Current;
+end;
+
+function TPriorityQueue<T>.TEnumerator<T>.DoMoveNext: Boolean;
+begin
+  Result := MoveNext;
+end;
+
+function TPriorityQueue<T>.TEnumerator<T>.GetCurrent: T;
+begin
+  Result := FList[FIndex];
+end;
+
+function TPriorityQueue<T>.TEnumerator<T>.MoveNext: Boolean;
+begin
+  Inc(FIndex);
+  Result := FIndex < Length(FList);
 end;
 
 end.
