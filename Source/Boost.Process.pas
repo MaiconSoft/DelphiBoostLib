@@ -16,21 +16,22 @@ type
     g_hChildStd_OUT_Rd: THANDLE;
     g_hChildStd_OUT_Wr: THANDLE;
     g_hInputFile, hParentStdOut: THANDLE;
-    chBuf: array[0..BUFSIZE - 1] of AnsiChar;
+    chBuf: array [0 .. BUFSIZE - 1] of AnsiChar;
     siStartInfo: TStartupInfoA;
     saAttr: TSecurityAttributes;
     dwRead, dwWritten: DWord;
     piProcInfo: TProcessInformation;
     bSuccess: boolean;
     class function NewSecurityAttributes: TSecurityAttributes;
-    class function NewStartInfo(HRead, HWrite: THandle; Visible: boolean = false):
-      TStartupInfoA;
-    function Pipe(var HRead: THandle; var HWrite: THandle; UseWrite: boolean =
-      False): boolean;
+    class function NewStartInfo(HRead, HWrite: THANDLE;
+      Visible: boolean = false): TStartupInfoA;
+    function Pipe(var HRead: THANDLE; var HWrite: THANDLE;
+      UseWrite: boolean = false): boolean;
     class function Assert(state: boolean; Msg: string): boolean;
-    function NewProcess(CommandLine: AnsiString): boolean;
+    function NewProcess(CommandLine: AnsiString;
+      CurrentDirectory: AnsiString = ''): boolean;
   public
-    //StdIn: THandle = 0; StdOut: THandle = 0;StdErr: THandle = 0
+    // StdIn: THandle = 0; StdOut: THandle = 0;StdErr: THandle = 0
     procedure Write(const Buffer; Size: DWord); overload;
     procedure Write(value: string); overload;
     procedure Write(FmtString: string; Params: array of const); overload;
@@ -39,14 +40,16 @@ type
     procedure WriteA(FmtString: AnsiString; Params: array of const); overload;
     procedure Write(value: byte); overload;
     procedure Write(value: AnsiChar); overload;
-    procedure Write(value: DWORD); overload;
+    procedure Write(value: DWord); overload;
     procedure Writeln(value: string);
     function Wait(Ms: DWord = INFINITE): boolean;
-    function Run(CommandLine: string; Visible: boolean = false): Boolean;
+    function Run(CommandLine: string; CurrentDirectory: string = '';
+      Visible: boolean = false): boolean;
     function ReadAllData(Func: TProc<string> = nil): string;
     function Kill: boolean;
     constructor Create; overload;
-    constructor Create(CommandLine: string; Visible: boolean = false); overload;
+    constructor Create(CommandLine: string; CurrentDirectory: string = '';
+      Visible: boolean = false); overload;
     destructor Destroy; override;
   end;
 
@@ -66,10 +69,11 @@ begin
   saAttr := NewSecurityAttributes;
 end;
 
-constructor TPipe.Create(CommandLine: string; Visible: boolean = false);
+constructor TPipe.Create(CommandLine: string; CurrentDirectory: string = '';
+  Visible: boolean = false);
 begin
   Create;
-  Run(CommandLine, Visible);
+  Run(CommandLine, CurrentDirectory, Visible);
 end;
 
 destructor TPipe.Destroy;
@@ -83,18 +87,21 @@ end;
 
 function TPipe.Kill: boolean;
 begin
-  Assert(TerminateProcess(piProcInfo.hProcess, 0), 'Fail on terminate child process: ');
+  Assert(TerminateProcess(piProcInfo.hProcess, 0),
+    'Fail on terminate child process: ');
 end;
 
-function TPipe.NewProcess(CommandLine: AnsiString): boolean;
+function TPipe.NewProcess(CommandLine: AnsiString;
+  CurrentDirectory: AnsiString): boolean;
 begin
   Result := CreateProcessA(nil, Pansichar(CommandLine), @saAttr, @saAttr, True,
-    NORMAL_PRIORITY_CLASS, nil, nil, siStartInfo, piProcInfo);
+    NORMAL_PRIORITY_CLASS, nil, Pansichar(CurrentDirectory), siStartInfo,
+    piProcInfo);
 end;
 
 class function TPipe.NewSecurityAttributes: TSecurityAttributes;
 begin
-  with result do
+  with Result do
   begin
     nlength := SizeOf(TSecurityAttributes);
     binherithandle := True;
@@ -102,10 +109,10 @@ begin
   end;
 end;
 
-class function TPipe.NewStartInfo(HRead, HWrite: THandle; Visible: boolean):
-  TStartupInfoA;
+class function TPipe.NewStartInfo(HRead, HWrite: THANDLE; Visible: boolean)
+  : TStartupInfoA;
 begin
-  FillChar(Result, Sizeof(TStartUpInfo), #0);
+  FillChar(Result, SizeOf(TStartUpInfo), #0);
   Result.cb := SizeOf(TStartUpInfo);
   Result.wShowWindow := ord(Visible);
   Result.hStdError := HWrite;
@@ -114,10 +121,10 @@ begin
   Result.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
 end;
 
-function TPipe.Pipe(var HRead: THandle; var HWrite: THandle; UseWrite: boolean =
-  False): boolean;
+function TPipe.Pipe(var HRead: THANDLE; var HWrite: THANDLE;
+  UseWrite: boolean = false): boolean;
 var
-  h: THandle;
+  h: THANDLE;
 begin
   Result := CreatePipe(HRead, HWrite, @saAttr, 0);
   if UseWrite then
@@ -131,13 +138,13 @@ end;
 
 function TPipe.ReadAllData(Func: TProc<string> = nil): string;
 var
-  hParentStdOut: THandle;
+  hParentStdOut: THANDLE;
   data: string;
 begin
   Result := '';
   hParentStdOut := GetStdHandle(STD_OUTPUT_HANDLE);
-  FillChar(chBuf, length(chBuf), #0);
   repeat
+    FillChar(chBuf, length(chBuf), #0);
     bSuccess := ReadFile(g_hChildStd_OUT_Rd, chBuf, BUFSIZE, dwRead, nil);
 
     if (not bSuccess or (dwRead = 0)) then
@@ -146,10 +153,11 @@ begin
     if Assigned(Func) then
       Func(data);
     Result := Result + data;
-  until False;
+  until false;
 end;
 
-function TPipe.Run(CommandLine: string; Visible: boolean = false): Boolean;
+function TPipe.Run(CommandLine: string; CurrentDirectory: string = '';
+  Visible: boolean = false): boolean;
 var
   b: byte;
 begin
@@ -161,7 +169,7 @@ begin
 
   siStartInfo := NewStartInfo(g_hChildStd_IN_Rd, g_hChildStd_OUT_Wr, Visible);
 
-  Assert(NewProcess(CommandLine),
+  Assert(NewProcess(CommandLine, CurrentDirectory),
     'Failed creating the console process. System error msg: ');
 
   CloseHandle(g_hChildStd_OUT_Wr);
@@ -186,7 +194,7 @@ end;
 
 procedure TPipe.WritelnA(value: AnsiString);
 begin
-  writeA(value + #10);
+  WriteA(value + #10);
 end;
 
 function TPipe.Wait(Ms: DWord): boolean;
@@ -200,7 +208,7 @@ begin
     'Error on write on child process: ');
 end;
 
-procedure TPipe.Write(value: DWORD);
+procedure TPipe.Write(value: DWord);
 begin
   Assert(WriteFile(g_hChildStd_IN_Wr, value, 4, dwWritten, nil),
     'Error on write on child process: ');
@@ -234,4 +242,3 @@ begin
 end;
 
 end.
-
